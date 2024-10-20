@@ -81,22 +81,7 @@ class BasicWorldDemo {
     this._scene.add(plane);
     
     const cylinderGeometry = new THREE.CylinderGeometry(
-      // radiusTop: 
-      1, 
-      // radiusBottom: 
-      1, 
-      // height: 
-      2, 
-      // radialSegments: 
-      32, 
-      // heightSegments: 
-      1, 
-      // openEnded: 
-      false, 
-      // thetaStart: 
-      0, 
-      // thetaLength: 
-      Math.PI * 2
+      1,       1,       2,       32,       1,       false,       0,       Math.PI * 2
     );
     
     const cylinderMaterial = new THREE.MeshStandardMaterial({
@@ -188,18 +173,6 @@ class BasicWorldDemo {
       //updateCameraTarget(box.position.x,box.position.z);
     }
 
-  //   function updateCameraTarget(moveX, moveZ) {
-  //     // move camera
-  //     this._camera.position.x += moveX
-  //     this._camera.position.z += moveZ
-
-  //     // update camera target
-  //     this.cameraTarget.x = this.model.position.x
-  //     this.cameraTarget.y = this.model.position.y + 1
-  //     this.cameraTarget.z = this.model.position.z
-  //     this.orbitControl.target = this.cameraTarget
-  // }
-    
     let theta = 0;
 
     document.addEventListener('keydown', (event) => {
@@ -248,41 +221,6 @@ class BasicWorldDemo {
 
   
  }
-
-// function isWKeyPressed() {
-//     // Check if the 'w' key is currently pressed.
-//     return event.key === 'w';
-//   }
- 
-//   function isAKeyPressed() {
-//     // Check if the 'w' key is currently pressed.
-//     return event.key === 'a';
-//   }
-//   function isSKeyPressed() {
-//     // Check if the 'w' key is currently pressed.
-//     return event.key === 's';
-//   }
-//   function isDKeyPressed() {
-//     // Check if the 'w' key is currently pressed.
-//     return event.key === 'd';
-//   }  
-
-//   document.addEventListener('keydown', function(event) {
-//     if (isWKeyPressed()) {
-//         box.position.x += 1;
-//       console.log("The 'w' key is pressed!");
-//     }
-//     else if (isAKeyPressed()){
-//         console.log("The 'a' key is pressed!");
-//     }
-//     else if (isSKeyPressed()){
-//         console.log("The 's' key is pressed!");
-//     }
-//     else if (isDKeyPressed()){
-//         console.log("The 'd' key is pressed!");
-//     }
-//   });
-
 
 
 let _APP = null;
