@@ -1,12 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Basic 3D World</title>
-  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  <link rel="stylesheet" type="text/css" href="base.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Bullet Hole Game</title>
+    <link rel="stylesheet" href="start.css"> <!-- Link to the external CSS file -->
 </head>
 <body>
-  <script src="./main.js" type="module">
-  </script>
+    <div class="start-screen">
+        <div class="game-title">
+            <h1>Bullet Hole</h1>
+        </div>
+        <div class="start-button">
+            <button onclick="startGame()">Start Game</button>
+        </div>
+    </div>
+
+    <script>
+        function startGame() {
+            window.location.href = "game.html"; // Replace 'game.html' with the actual page you want to redirect to
+        }
+    </script>
 </body>
 </html>
