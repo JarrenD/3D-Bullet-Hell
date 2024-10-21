@@ -8,7 +8,12 @@ import { entity } from './entity.js';
 import { player_input } from './player-input.js';
 import { spatial_hash_grid } from './spatial-hash-grid.js';
 import { spatial_grid_controller } from './spatial-grid-controller.js';
+import {gltf_component} from './gltf-component.js';
+import {npc_entity} from './npc-entity.js';
 import { math } from './math.js';
+import {attack_controller} from './attacker-controller.js';
+import {health_component} from './health-component.js';
+import {health_bar} from './health-bar.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/loaders/GLTFLoader.js';
 
 
@@ -114,67 +119,11 @@ class BulletHell {
         // this._LoadClouds();
         this._LoadSky();
         this._LoadArena();
+       // this._LoadBoss();
 
         this._previousRAF = null;
         this._RAF();
 
-        const cylinderGeometry = new THREE.CylinderGeometry(
-            1, 1, 2, 32, 1, false, 0, Math.PI * 2
-        );
-
-        const cylinderMaterial = new THREE.MeshStandardMaterial({
-            color: 0xFF0000, // Red color
-        });
-
-        const cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
-
-        cylinder.position.set(0, 1, 40); // Set the position
-        cylinder.castShadow = true; // Enable shadow casting
-        cylinder.receiveShadow = true; // Enable shadow receiving
-        cylinder.scale.set(4, 12, 4);
-        this._scene.add(cylinder); // Add to the scene
-
-        // Create a function to generate a tall cylinder
-        function createTallCylinder(position) {
-            const tallCylinderGeometry = new THREE.CylinderGeometry(
-                0.6,  // Radius at the bottom
-                0.6,  // Radius at the top
-                100,   // Height
-                32,   // Number of radial segments
-                1,    // Number of height segments
-                false, // Open ended
-                0,    // Phi start
-                Math.PI * 2 // Phi length
-            );
-
-            const tallCylinderMaterial = new THREE.MeshStandardMaterial({
-                color: 0x000000, // Black color
-            });
-
-            const tallCylinder = new THREE.Mesh(tallCylinderGeometry, tallCylinderMaterial);
-            tallCylinder.position.copy(position); // Set the position from the argument
-            tallCylinder.castShadow = true; // Enable shadow casting
-            tallCylinder.receiveShadow = true; // Enable shadow receiving
-
-            return tallCylinder; // Return the new mesh instance
-        }
-
-        // Example of adding multiple cylinders
-        const positions = [
-            new THREE.Vector3(0, 1, -40),
-            new THREE.Vector3(0, 1, 120),
-            new THREE.Vector3(-80, 1, 40),
-            new THREE.Vector3(80, 1, 40),
-            new THREE.Vector3(80, 1, -40),
-            new THREE.Vector3(80, 1, 120),
-            new THREE.Vector3(-80, 1, -40),
-            new THREE.Vector3(-80, 1, 120)
-        ];
-
-        positions.forEach(pos => {
-            const cylinder = createTallCylinder(pos); // Create a new cylinder
-            this._scene.add(cylinder); // Add to the scene
-        });
 
 
     }
@@ -207,7 +156,7 @@ class BulletHell {
         this._scene.add(sky);
       }
     
-    _LoadArena() {
+      _LoadArena() {
         const loader = new GLTFLoader();
         const modelPath = './resources/arena.glb'; // Replace with the path to your .glb model file
     
@@ -220,6 +169,11 @@ class BulletHell {
             console.error('An error occurred while loading the model:', error);
         });
     }
+
+    //   _LoadBoss(){
+        
+    //   }
+
     
 
     _LoadPlayer() {
@@ -246,7 +200,44 @@ class BulletHell {
         this._entityManager.Add(camera, 'player-camera');
 
 
-
+        const boss = new entity.Entity();
+        
+        const pos = new THREE.Vector3(
+            0,
+            0,
+            40);
+            boss.SetPosition(pos);
+        boss.AddComponent(new npc_entity.NPCController({
+            camera: this._camera,
+            scene: this._scene,
+            resourceName: 'George.fbx',
+            resourceTexture: 'George_Texture.png',
+        }));
+        boss.AddComponent(
+            new health_component.HealthComponent({
+                health: 50,
+                maxHealth: 50,
+                strength: 2,
+                wisdomness: 2,
+                benchpress: 3,
+                curl: 1,
+                experience: 0,
+                level: 1,
+                camera: this._camera,
+                scene: this._scene,
+            })
+        );
+        boss.AddComponent(
+            new spatial_grid_controller.SpatialGridController({grid: this._grid}));
+            boss.AddComponent(new health_bar.HealthBar({
+                parent: this._scene,
+                camera: this._camera,
+            })); 
+        boss.AddComponent(new attack_controller.AttackController({timing: 0.35}));
+            
+        
+        this._entityManager.Add(boss);
+        boss.SetActive(false);
     }
 
     _OnWindowResize() {
