@@ -274,7 +274,8 @@ function calculateTangentialDirection(centerX, centerZ, posX, posZ, direction) {
     const currentTime = Date.now() / 1000; // Get current time in seconds
         if (input._keys.l && (currentTime - this._lastBulletTime) >= this._bulletCooldown) {
             const bullet = new Bullet({
-                scene: this._params.scene
+                scene: this._params.scene,
+                npcs: this._params.npcList,
             });
 
             bullet._mesh.position.copy(controlObject.position);

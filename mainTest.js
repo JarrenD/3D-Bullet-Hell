@@ -73,6 +73,7 @@ class BulletHell {
         this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         this._camera.position.set(25, 10, 25);
 
+        this._npcList = [];
 
         // const controls = new OrbitControls(
         //     this._camera, this._threejs.domElement);
@@ -181,28 +182,6 @@ class BulletHell {
     
 
     _LoadPlayer() {
-        const params = {
-            camera: this._camera,
-            scene: this._scene,
-        };
-
-        const player = new entity.Entity();
-        //player.SetPosition(new THREE.Vector3(10, 10, 10));
-        player.AddComponent(new player_input.BasicCharacterControllerInput(params));
-        player.AddComponent(new player_entity.BasicCharacterController(params));
-        player.AddComponent(
-            new spatial_grid_controller.SpatialGridController({ grid: this._grid }));
-        this._entityManager.Add(player, 'player');
-
-
-        const camera = new entity.Entity();
-        camera.AddComponent(
-            new third_person_camera.ThirdPersonCamera({
-                camera: this._camera,
-                target: this._entityManager.Get('player')
-            }));
-        this._entityManager.Add(camera, 'player-camera');
-
 
         const boss = new entity.Entity();
         
@@ -219,8 +198,8 @@ class BulletHell {
         }));
         boss.AddComponent(
             new health_component.HealthComponent({
-                health: 50,
-                maxHealth: 50,
+                health: 250,
+                maxHealth: 250,
                 strength: 2,
                 wisdomness: 2,
                 benchpress: 3,
@@ -238,10 +217,43 @@ class BulletHell {
                 camera: this._camera,
             })); 
         boss.AddComponent(new attack_controller.AttackController({timing: 0.35}));
-            
         
         this._entityManager.Add(boss);
-        boss.SetActive(false);
+        this._npcList.push(boss.GetComponent('NPCController'));
+
+        const params = {
+            camera: this._camera,
+            scene: this._scene,
+            npcList: this._npcList,
+        };
+
+        const player = new entity.Entity();
+        //player.SetPosition(new THREE.Vector3(10, 10, 10));
+        player.AddComponent(new player_input.BasicCharacterControllerInput(params));
+        player.AddComponent(new player_entity.BasicCharacterController(params));
+        player.AddComponent(
+            new spatial_grid_controller.SpatialGridController({ grid: this._grid }));
+        this._entityManager.Add(player, 'player');
+        player.AddComponent(new health_component.HealthComponent({
+            updateUI: true,
+            health: 100,
+            maxHealth: 100,
+            strength: 50,
+            wisdomness: 5,
+            benchpress: 20,
+            curl: 100,
+            experience: 0,
+            level: 1,
+        }));
+
+        const camera = new entity.Entity();
+        camera.AddComponent(
+            new third_person_camera.ThirdPersonCamera({
+                camera: this._camera,
+                target: this._entityManager.Get('player')
+            }));
+        this._entityManager.Add(camera, 'player-camera');
+
     }
 
     _OnWindowResize() {

@@ -8,7 +8,7 @@ export const entity_bullet_enemy = (() => {
     }
 
     _Init(params) {
-      console.log("Enemy Bullet Created");
+      //console.log("Enemy Bullet Created");
       this._scene = params.scene;
       this._startPosition = params.startPosition.clone();
       this._targetPosition = params.targetPosition.clone();

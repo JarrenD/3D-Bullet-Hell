@@ -61,6 +61,10 @@ export const npc_entity = (() => {
       this._bulletCooldown = 0.0; // Cooldown timer for shooting bullets
       this._bulletInterval = 1.0; // 1 second interval between bullets
 
+      this._bullets = [];
+
+      this._boundingBox = new THREE.Box3();
+
       this._animations = {};
       this._input = new AIInput();
       // FIXME
@@ -112,6 +116,9 @@ export const npc_entity = (() => {
           }
         });
 
+         // Update bounding box after model is loaded
+         this._boundingBox.setFromObject(this._target);
+
         this._mixer = new THREE.AnimationMixer(this._target);
 
         const fbx = glb;
@@ -140,24 +147,26 @@ export const npc_entity = (() => {
     }
 
     _ShootEnemyBullet() {
-        // Enemy's current position (NPC's position)
-        const enemyPosition = this._position.clone();
-  
-        // Target point to shoot towards
-        const targetPosition = new THREE.Vector3(0, 2, 80);
-  
-        // Create and fire an enemy bullet
-        const enemyBullet = new entity_bullet_enemy.EnemyBullet({
-          scene: this._params.scene,
-          startPosition: enemyPosition,
-          targetPosition: targetPosition,
-          speed: 30.0,
-        });
-  
-        // Add the bullet to the scene
-        this._params.scene.add(enemyBullet.mesh);
-      }
+      // Enemy's current position (NPC's position)
+      const enemyPosition = new THREE.Vector3(0, 12, 40);
 
+      // Target point to shoot towards
+      const targetPosition = new THREE.Vector3(0, 6, 80);
+
+      // Create and fire an enemy bullet
+      const enemyBullet = new entity_bullet_enemy.EnemyBullet({
+        scene: this._params.scene,
+        startPosition: enemyPosition,
+        targetPosition: targetPosition,
+        speed: 30.0,
+      });
+      this._bullets.push(enemyBullet);
+      
+      
+      // Add the bullet to the scene
+
+      //this._params.scene.add(enemyBullet);
+    }
     get Position() {
       return this._position;
     }
@@ -207,7 +216,7 @@ export const npc_entity = (() => {
       };
 
       const grid = this.GetComponent('SpatialGridController');
-      const nearby = grid.FindNearbyEntities(100);
+      const nearby = grid.FindNearbyEntities(10000);
       if (nearby.length == 0) {
         return new THREE.Vector3(0, 0, 0);
       }
@@ -233,12 +242,22 @@ export const npc_entity = (() => {
       }
 
       // Update bullet cooldown and shoot if time is up
-      // this._bulletCooldown += timeInSeconds;
-      // if (this._bulletCooldown >= this._bulletInterval) {
-      //   // console.log("Enemy Attempting To shoot");
-      //   this._ShootEnemyBullet();
-      //   this._bulletCooldown = 0.0; // Reset cooldown
-      // }
+      this._bulletCooldown += timeInSeconds;
+      if (this._bulletCooldown >= this._bulletInterval) {
+        //console.log("Enemy Attempting To shoot");
+        this._ShootEnemyBullet();
+        this._bulletCooldown = 0.0; // Reset cooldown
+      }
+
+      for (let i = this._bullets.length - 1; i >= 0; i--) {
+        const bullet = this._bullets[i];
+        bullet.Update(timeInSeconds); // Call the bullet's update method
+
+        // If the bullet has been marked for removal, remove it from the array
+        if (!bullet._mesh.parent) { // Check if the bullet has been removed from the scene
+            this._bullets.splice(i, 1);
+        }
+    }
 
           // Get the direction to the player
           const dirToPlayer = this._FindPlayer();
@@ -265,7 +284,7 @@ export const npc_entity = (() => {
           // Update the parent position and quaternion (optional)
           this._parent.SetQuaternion(controlObject.quaternion);
 
-    
+          
     }
 
   
@@ -345,6 +364,11 @@ export const npc_entity = (() => {
       if (!this._stateMachine._currentState) {
         return;
       }
+
+      if (this._target) {
+        this._boundingBox.setFromObject(this._target);
+    }
+
 
       this._input._keys.space = false;
       this._input._keys.forward = false;
