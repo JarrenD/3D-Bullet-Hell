@@ -9,6 +9,7 @@ export const health_component = (() => {
       this._health = params.health;
       this._maxHealth = params.maxHealth;
       this._params = params;
+      //this.InitComponent();
     }
 
     InitComponent() {
@@ -22,6 +23,14 @@ export const health_component = (() => {
       return this._health > 0;
     }
 
+    GetHealth(){
+      return this._health;
+    }
+
+    TakeDamage(amount) {
+      this._OnDamage({ value: amount });
+  }
+
     _UpdateUI() {
       if (!this._params.updateUI) {
         return;
@@ -32,11 +41,11 @@ export const health_component = (() => {
       const healthAsPercentage = this._health / this._maxHealth;
       bar.style.width = Math.floor(200 * healthAsPercentage) + 'px';
 
-      document.getElementById('stats-strength').innerText = this._params.strength;
-      document.getElementById('stats-wisdomness').innerText = this._params.wisdomness;
-      document.getElementById('stats-benchpress').innerText = this._params.benchpress;
-      document.getElementById('stats-curl').innerText = this._params.curl;
-      document.getElementById('stats-experience').innerText = this._params.experience;
+      // document.getElementById('stats-strength').innerText = this._params.strength;
+      // document.getElementById('stats-wisdomness').innerText = this._params.wisdomness;
+      // document.getElementById('stats-benchpress').innerText = this._params.benchpress;
+      // document.getElementById('stats-curl').innerText = this._params.curl;
+      // document.getElementById('stats-experience').innerText = this._params.experience;
     }
 
     _ComputeLevelXPRequirement() {
