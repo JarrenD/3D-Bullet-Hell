@@ -15,6 +15,7 @@ import {attack_controller} from './attacker-controller.js';
 import {health_component} from './health-component.js';
 import {health_bar} from './health-bar.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/loaders/GLTFLoader.js';
+import {FBXLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/FBXLoader.js';
 
 
 const _VS = `
@@ -120,7 +121,6 @@ class BulletHell {
         this._LoadSky();
         this._LoadArena();
        // this._LoadBoss();
-
         this._previousRAF = null;
         this._RAF();
 
