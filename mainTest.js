@@ -162,8 +162,8 @@ class BulletHell {
     
         loader.load(modelPath, (gltf) => {
             const platform = gltf.scene; // Get the loaded model
-            platform.position.set(0, 1, 40); // Set the desired position
-            platform.scale.set(0.05, 0.05, 0.05); // Adjust scale if necessary
+            platform.position.set(0, -7.5, 40); // Set the desired position
+            platform.scale.set(0.01, 0.01, 0.01); // Adjust scale if necessary
             this._scene.add(platform); // Add the platform to the scene
         }, undefined, (error) => {
             console.error('An error occurred while loading the model:', error);
