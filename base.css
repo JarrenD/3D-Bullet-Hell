@@ -78,3 +78,28 @@ button:active {
 .hidden {
   display: none;
 }
+
+.progress-bar-container {
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%, 0); /* Center horizontally */
+   /* Add margin to push down */
+  width: 100%;
+  height: 100%; /* Change this if needed */
+  background: linear-gradient(135deg, #1c1c1c, #4a4a4a, #1c1c1c);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#progress-bar{
+  width: 30%;
+  margin-top: 0.5%;
+  height: 20px;
+  
+}
+label{
+  color: white;
+  font-size: 2rem;
+}

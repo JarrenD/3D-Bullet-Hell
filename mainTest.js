@@ -148,7 +148,18 @@ class BulletHell {
       }
     
       _LoadArena() {
-        const loader = new GLTFLoader();
+        const loadingManager = new THREE.LoadingManager();
+        const progressBar = document.getElementById('progress-bar');
+        const progressBarContainer = document.querySelector('.progress-bar-container');
+        loadingManager.onProgress = function(url,loaded,total){
+            progressBar.value = (loaded/total)*100;
+        };
+
+        loadingManager.onLoad = function(){
+            progressBarContainer.style.display = 'none';
+        };
+        
+        const loader = new GLTFLoader(loadingManager);
         const modelPath = './resources/arena.glb'; // Replace with the path to your .glb model file
     
         loader.load(modelPath, (gltf) => {
