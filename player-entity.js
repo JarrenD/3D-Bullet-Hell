@@ -5,6 +5,7 @@ import {FBXLoader} from 'https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm
 import {entity} from './entity.js';
 import {finite_state_machine} from './finite-state-machine.js';
 import {player_state} from './player-state.js';
+import { Bullet } from './bullet.js';
 
 
 export const player_entity = (() => {
@@ -14,6 +15,7 @@ export const player_entity = (() => {
       super();
       this._proxy = proxy;
       this._Init();
+      
     }
   
     _Init() {
@@ -63,11 +65,16 @@ function calculateTangentialDirection(centerX, centerZ, posX, posZ, direction) {
 
     _Init(params) {
       this._params = params;
-      this._decceleration = new THREE.Vector3(-5, -0.0001, -5.0);
-      this._acceleration = new THREE.Vector3(80, 0.125, 50.0);
+      this._decceleration = new THREE.Vector3(-5, -9.8, -5.0);
+      this._acceleration = new THREE.Vector3(80, 1000, 50.0);
       this._velocity = new THREE.Vector3(0, 0, 0);
       this._position = new THREE.Vector3();
 
+      this._bullets = [];
+      this._lastBulletTime = 0; // Time when the last bullet was fired
+      this._bulletCooldown = 0.2; // Cooldown in seconds
+
+      this._currentlyJumping = false;
       this._theta = 0;
       this._centerPoint = new THREE.Vector3(0, 0, 40); // Center of the circular path
 
@@ -190,7 +197,8 @@ function calculateTangentialDirection(centerX, centerZ, posX, posZ, direction) {
       const currentState = this._stateMachine._currentState;
       if (currentState.Name != 'walk' &&
           currentState.Name != 'run' &&
-          currentState.Name != 'idle') {
+          currentState.Name != 'idle'&&
+          currentState.Name != 'jump') {
         return;
       }
     
@@ -198,8 +206,9 @@ function calculateTangentialDirection(centerX, centerZ, posX, posZ, direction) {
       const frameDecceleration = new THREE.Vector3(
           velocity.x * this._decceleration.x,
           velocity.y * this._decceleration.y,
-          velocity.z * this._decceleration.z
+          velocity.z * this._decceleration.z          
       );
+      
       frameDecceleration.multiplyScalar(timeInSeconds);
       frameDecceleration.z = Math.sign(frameDecceleration.z) * Math.min(
           Math.abs(frameDecceleration.z), Math.abs(velocity.z));
@@ -210,24 +219,63 @@ function calculateTangentialDirection(centerX, centerZ, posX, posZ, direction) {
       const _Q = new THREE.Quaternion();
       const _A = new THREE.Vector3();
       const _R = controlObject.quaternion.clone();
-  
+    
+      if(controlObject.position.y> 0){
+        velocity.y = velocity.y-9.8;
+      }
+      if(controlObject.position.y< 0){
+        controlObject.position.y=0;
+      }
+
       const acc = this._acceleration.clone();
       if (input._keys.shift) {
-        acc.multiplyScalar(2.0);
+        acc.multiplyScalar(3.0);
       }
   
-      if (input._keys.forward) {
+      if (input._keys.forward ) {
         velocity.z += acc.z * timeInSeconds;
       }
-      if (input._keys.backward) {
+      if (input._keys.backward ) {
         velocity.z -= acc.z * timeInSeconds;
       }
+
+    //   if(input._keys.space&& !this._currentlyJumping){
+    //     this._currentlyJumping=true;
+    //     for (let index = 0; index < 12; index++) {
+    //         velocity.y += acc.y *timeInSeconds; 
+    //     }
+    //     setTimeout(() => { 
+    //         this._currentlyJumping=false;
+    //     }, 1.5);
+    //   }
       
+    const currentTime = Date.now() / 1000; // Get current time in seconds
+        if (input._keys.l && (currentTime - this._lastBulletTime) >= this._bulletCooldown) {
+            const bullet = new Bullet({
+                scene: this._params.scene
+            });
+
+            bullet._mesh.position.copy(controlObject.position);
+            bullet._mesh.position.y = 0.5; // Adjust y position if needed
+
+            this._bullets.push(bullet); // Add bullet to the array
+            this._parent.AddComponent(bullet); // Add bullet component to the parent for cleanup
+
+            this._lastBulletTime = currentTime; // Update last bullet time
+        }
+
+        // Update each bullet
+        for (let i = this._bullets.length - 1; i >= 0; i--) {
+            const bullet = this._bullets[i];
+            bullet.Update(timeInSeconds); // Call the bullet's update method
+
+            // If the bullet has been marked for removal, remove it from the array
+            if (!bullet._mesh.parent) { // Check if the bullet has been removed from the scene
+                this._bullets.splice(i, 1);
+            }
+        }
       
-     // console.log("x: "+ controlObject.position.x+"z: "+ controlObject.position.z); IMPORTANT
-     const speedMultiplier = 20.0;
-      
-     if (input._keys.left) {
+     if (input._keys.left ) {
         velocity.x += acc.x * timeInSeconds; // Move left in x direction
       } else if (input._keys.right) {
         velocity.x -= acc.x * timeInSeconds; // Move right in x direction
@@ -250,13 +298,19 @@ function calculateTangentialDirection(centerX, centerZ, posX, posZ, direction) {
       const sideways = new THREE.Vector3(1, 0, 0);
       sideways.applyQuaternion(controlObject.quaternion);
       sideways.normalize();
-  
+      
+      const upwards = new THREE.Vector3(0, 1, 0);
+      upwards.applyQuaternion(controlObject.quaternion);
+      upwards.normalize();
+
+      upwards.multiplyScalar(velocity.y * timeInSeconds);
       sideways.multiplyScalar(velocity.x * timeInSeconds);
       forward.multiplyScalar(velocity.z * timeInSeconds);
   
       const pos = controlObject.position.clone();
       pos.add(forward);
       pos.add(sideways);
+      pos.add(upwards);
 
       const collisions = this._FindIntersections(pos);
       if (collisions.length > 0) {
