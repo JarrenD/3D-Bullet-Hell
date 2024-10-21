@@ -14,6 +14,8 @@ import { math } from './math.js';
 import {attack_controller} from './attacker-controller.js';
 import {health_component} from './health-component.js';
 import {health_bar} from './health-bar.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/loaders/GLTFLoader.js';
+
 
 const _VS = `
 varying vec3 vWorldPosition;
@@ -116,53 +118,12 @@ class BulletHell {
         // this._LoadFoliage();
         // this._LoadClouds();
         this._LoadSky();
+        this._LoadArena();
        // this._LoadBoss();
 
         this._previousRAF = null;
         this._RAF();
 
-        
-        // Create a function to generate a tall cylinder
-        function createTallCylinder(position) {
-            const tallCylinderGeometry = new THREE.CylinderGeometry(
-                0.6,  // Radius at the bottom
-                0.6,  // Radius at the top
-                100,   // Height
-                32,   // Number of radial segments
-                1,    // Number of height segments
-                false, // Open ended
-                0,    // Phi start
-                Math.PI * 2 // Phi length
-            );
-
-            const tallCylinderMaterial = new THREE.MeshStandardMaterial({
-                color: 0x000000, // Black color
-            });
-
-            const tallCylinder = new THREE.Mesh(tallCylinderGeometry, tallCylinderMaterial);
-            tallCylinder.position.copy(position); // Set the position from the argument
-            tallCylinder.castShadow = true; // Enable shadow casting
-            tallCylinder.receiveShadow = true; // Enable shadow receiving
-
-            return tallCylinder; // Return the new mesh instance
-        }
-
-        // Example of adding multiple cylinders
-        const positions = [
-            new THREE.Vector3(0, 1, -40),
-            new THREE.Vector3(0, 1, 120),
-            new THREE.Vector3(-80, 1, 40),
-            new THREE.Vector3(80, 1, 40),
-            new THREE.Vector3(80, 1, -40),
-            new THREE.Vector3(80, 1, 120),
-            new THREE.Vector3(-80, 1, -40),
-            new THREE.Vector3(-80, 1, 120)
-        ];
-
-        positions.forEach(pos => {
-            const cylinder = createTallCylinder(pos); // Create a new cylinder
-            this._scene.add(cylinder); // Add to the scene
-        });
 
 
     }
@@ -194,10 +155,26 @@ class BulletHell {
         const sky = new THREE.Mesh(skyGeo, skyMat);
         this._scene.add(sky);
       }
+    
+      _LoadArena() {
+        const loader = new GLTFLoader();
+        const modelPath = './resources/arena.glb'; // Replace with the path to your .glb model file
+    
+        loader.load(modelPath, (gltf) => {
+            const platform = gltf.scene; // Get the loaded model
+            platform.position.set(0, 1, 40); // Set the desired position
+            platform.scale.set(0.05, 0.05, 0.05); // Adjust scale if necessary
+            this._scene.add(platform); // Add the platform to the scene
+        }, undefined, (error) => {
+            console.error('An error occurred while loading the model:', error);
+        });
+    }
 
     //   _LoadBoss(){
         
     //   }
+
+    
 
     _LoadPlayer() {
         const params = {
