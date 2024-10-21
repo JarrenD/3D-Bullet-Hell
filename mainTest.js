@@ -110,7 +110,7 @@ class BulletHell {
         this._LoadPlayer();
         // this._LoadFoliage();
         // this._LoadClouds();
-        // this._LoadSky();
+        this._LoadSky();
 
         this._previousRAF = null;
         this._RAF();
@@ -128,7 +128,7 @@ class BulletHell {
         cylinder.position.set(0, 1, 40); // Set the position
         cylinder.castShadow = true; // Enable shadow casting
         cylinder.receiveShadow = true; // Enable shadow receiving
-        cylinder.scale.set(2, 2, 2);
+        cylinder.scale.set(4, 12, 4);
         this._scene.add(cylinder); // Add to the scene
 
         // Create a function to generate a tall cylinder
@@ -176,7 +176,33 @@ class BulletHell {
 
     }
 
-
+    _LoadSky() {
+        const hemiLight = new THREE.HemisphereLight(0xFFFFFF, 0xFFFFFFF, 0.6);
+        hemiLight.color.setHSL(0.6, 1, 0.6);
+        hemiLight.groundColor.setHSL(0.095, 1, 0.75);
+        this._scene.add(hemiLight);
+    
+        const uniforms = {
+          "topColor": { value: new THREE.Color(0x0077ff) },
+          "bottomColor": { value: new THREE.Color(0xffffff) },
+          "offset": { value: 33 },
+          "exponent": { value: 0.6 }
+        };
+        uniforms["topColor"].value.copy(hemiLight.color);
+    
+        this._scene.fog.color.copy(uniforms["bottomColor"].value);
+    
+        const skyGeo = new THREE.SphereBufferGeometry(1000, 32, 15);
+        const skyMat = new THREE.ShaderMaterial({
+            uniforms: uniforms,
+            vertexShader: _VS,
+            fragmentShader: _FS,
+            side: THREE.BackSide
+        });
+    
+        const sky = new THREE.Mesh(skyGeo, skyMat);
+        this._scene.add(sky);
+      }
 
     _LoadPlayer() {
         const params = {

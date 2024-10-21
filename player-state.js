@@ -47,6 +47,65 @@ export const player_state = (() => {
         }
     };
 
+    // class JumpState extends State {
+    //     constructor(parent) {
+    //         super(parent);
+
+    //         this._action = null;
+    //         this.isJumping = false; 
+    //         this._FinishedCallback = () => {
+    //             this._Finished();
+    //         }
+    //     }
+
+    //     get Name() {
+    //         return 'jump';
+    //     }
+
+    //     Enter(prevState) {
+    //         // Set the jumping action if it exists
+    //         this._action = this._parent._proxy._animations['jump']?.action; // Optional chaining in case it doesn't exist
+    //         if (this._action) {
+    //             const mixer = this._action.getMixer();
+    //             mixer.addEventListener('finished', this._FinishedCallback);
+    
+    //             if (prevState) {
+    //                 const prevAction = this._parent._proxy._animations[prevState.Name].action;
+    
+    //                 this._action.reset();
+    //                 this._action.setLoop(THREE.LoopOnce, 1);
+    //                 this._action.clampWhenFinished = true;
+    //                 this._action.crossFadeFrom(prevAction, 0.2, true);
+    //                 this._action.play();
+    //             } else {
+    //                 this._action.play();
+    //             }
+    //         }
+    
+    //         this.isJumping = true; // Indicate that the jump has started
+    //         this._parent._velocity.y = 10; // Example jump force; adjust as necessary
+    //     }
+
+    //     _Finished() {
+    //         this.isJumping = false; 
+    //         this._Cleanup();
+    //         this._parent.SetState('idle');
+    //     }
+
+    //     _Cleanup() {
+    //         if (this._action) {
+    //             this._action.getMixer().removeEventListener('finished', this._FinishedCallback);
+    //         }
+    //     }
+
+    //     Exit() {
+    //         this._Cleanup();
+    //     }
+
+    //     Update(_) {
+    //     }
+    // }
+
     class AttackState extends State {
         constructor(parent) {
             super(parent);
@@ -228,6 +287,9 @@ export const player_state = (() => {
             } else if (input._keys.k) {
                 this._parent.SetState('attack');
             }
+            // else if (input._keys.space){
+            //     this._parent.SetState('jump');
+            // }
         }
     };
 
@@ -238,6 +300,7 @@ export const player_state = (() => {
         WalkState: WalkState,
         RunState: RunState,
         DeathState: DeathState,
+        //JumpState: JumpState,
     };
 
 })();

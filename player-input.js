@@ -30,6 +30,7 @@ export const player_input = (() => {
                 space: false,
                 shift: false,
                 k: false,
+                l:false,
             };
             this._raycaster = new THREE.Raycaster();
             document.addEventListener('keydown', (e) => this._onKeyDown(e), false);
@@ -91,14 +92,18 @@ export const player_input = (() => {
                     break;
                 case 32: // SPACE
                     this._keys.space = true;
-                    console.log("space pressed");
+                    //console.log("space pressed");
                     break;
                 case 16: // SHIFT
                     this._keys.shift = true;
                     break;
                 case 75: //K
                     this._keys.k = true;
-                    console.log("k pressed");
+                    //console.log("k pressed");
+                    break;
+                    case 76: //K
+                    this._keys.l = true;
+                    //console.log("k pressed");
                     break;
 
             }
@@ -126,6 +131,9 @@ export const player_input = (() => {
                     break;
                 case 75: // K
                     this._keys.k = false;
+                    break;
+                    case 76: // K
+                    this._keys.l = false;
                     break;
             }
         }
