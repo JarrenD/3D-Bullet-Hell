@@ -100,15 +100,6 @@ class BulletHell {
 
         this._sun = light;
 
-        const plane = new THREE.Mesh(
-            new THREE.PlaneGeometry(5000, 5000, 10, 10),
-            new THREE.MeshStandardMaterial({
-                color: 0x1e601c,
-            }));
-        plane.castShadow = false;
-        plane.receiveShadow = true;
-        plane.rotation.x = -Math.PI / 2;
-        this._scene.add(plane);
 
         this._entityManager = new entity_manager.EntityManager();
         this._grid = new spatial_hash_grid.SpatialHashGrid(
