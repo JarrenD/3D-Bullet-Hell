@@ -9,6 +9,8 @@ import { player_input } from './player-input.js';
 import { spatial_hash_grid } from './spatial-hash-grid.js';
 import { spatial_grid_controller } from './spatial-grid-controller.js';
 import { math } from './math.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/loaders/GLTFLoader.js';
+
 
 const _VS = `
 varying vec3 vWorldPosition;
@@ -111,6 +113,7 @@ class BulletHell {
         // this._LoadFoliage();
         // this._LoadClouds();
         this._LoadSky();
+        this._LoadArena();
 
         this._previousRAF = null;
         this._RAF();
@@ -203,6 +206,21 @@ class BulletHell {
         const sky = new THREE.Mesh(skyGeo, skyMat);
         this._scene.add(sky);
       }
+    
+    _LoadArena() {
+        const loader = new GLTFLoader();
+        const modelPath = './resources/arena.glb'; // Replace with the path to your .glb model file
+    
+        loader.load(modelPath, (gltf) => {
+            const platform = gltf.scene; // Get the loaded model
+            platform.position.set(0, 1, 40); // Set the desired position
+            platform.scale.set(0.05, 0.05, 0.05); // Adjust scale if necessary
+            this._scene.add(platform); // Add the platform to the scene
+        }, undefined, (error) => {
+            console.error('An error occurred while loading the model:', error);
+        });
+    }
+    
 
     _LoadPlayer() {
         const params = {
