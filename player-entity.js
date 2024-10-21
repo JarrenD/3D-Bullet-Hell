@@ -174,6 +174,7 @@ function calculateTangentialDirection(centerX, centerZ, posX, posZ, direction) {
     }
 
     Update(timeInSeconds) {
+      //console.log('UPDATED');
       if (!this._stateMachine._currentState) {
         return;
       }
