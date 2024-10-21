@@ -1,13 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <title>Basic 3D World</title>
   <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  <link rel="stylesheet" type="text/css" href="base.css">
+  <link rel="stylesheet" type="text/css" href="base.css"> <!-- CSS file linked here -->
 </head>
 <body>
-  <script src="./mainTest.js" type="module">
-  </script>
+  <!-- Restart Popup HTML -->
+  <div id="restart-popup" class="popup hidden">
+    <div class="popup-content">
+      <h2>Restart Game</h2>
+      <p>Are you sure you want to restart the game?</p>
+      <button id="confirm-restart">Yes</button>
+      <button id="cancel-restart">No</button>
+    </div>
+  </div>
+
+  <!-- Main container for the 3D scene -->
   <div class="container" id="container"></div>
+
+  <!-- JavaScript for Escape key and Popup functionality -->
+  <script>
+    window.onload = function() {
+      // Show the popup
+      function showRestartPopup() {
+        const popup = document.getElementById('restart-popup');
+        console.log("Showing popup");  // Log to verify the function is called
+        popup.classList.remove('hidden'); 
+        popup.style.display = 'block'; 
+      }
+
+      // Hide the popup
+      function hideRestartPopup() {
+        const popup = document.getElementById('restart-popup');
+        console.log("Hiding popup");  // Log to verify the function is called
+        popup.classList.add('hidden'); 
+        popup.style.display = 'none'; 
+      }
+
+      // Restart the game (placeholder function)
+      function restartGame() {
+        hideRestartPopup();
+        window.location.href = "index.html";
+        console.log("Game restarted!");  // Log to verify the function is called
+      }
+
+      // Event listener for the Escape key
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          showRestartPopup();
+        }
+      });
+
+      // Add event listeners for the popup buttons
+      document.getElementById('confirm-restart').onclick = restartGame;
+      document.getElementById('cancel-restart').onclick = hideRestartPopup;
+
+      // Make sure popup is hidden on load
+      hideRestartPopup();
+    };
+  </script>
+
+  <!-- Main JavaScript file (for your 3D world) -->
+  <script src="./mainTest.js" type="module"></script>
 </body>
 </html>
