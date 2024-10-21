@@ -6,7 +6,8 @@ import {finite_state_machine} from './finite-state-machine.js';
 import {entity} from './entity.js';
 import {player_entity} from './player-entity.js'
 import {player_state} from './player-state.js'
-import {entity_bullet_enemy} from './bullet-enemy.js';;
+import {entity_bullet_enemy} from './bullet-enemy.js';import { entity_manager } from './entity-manager.js';
+;
 
 
 export const npc_entity = (() => {
@@ -193,7 +194,7 @@ export const npc_entity = (() => {
       return collisions;
     }
 
-    _FindPlayer(pos) {
+    _FindPlayer() {
       const _IsAlivePlayer = (c) => {
         const h = c.entity.GetComponent('HealthComponent');
         if (!h) {
@@ -206,8 +207,7 @@ export const npc_entity = (() => {
       };
 
       const grid = this.GetComponent('SpatialGridController');
-      const nearby = grid.FindNearbyEntities(100).filter(c => _IsAlivePlayer(c));
-
+      const nearby = grid.FindNearbyEntities(100);
       if (nearby.length == 0) {
         return new THREE.Vector3(0, 0, 0);
       }
@@ -221,7 +221,6 @@ export const npc_entity = (() => {
     }
 
     _UpdateAI(timeInSeconds) {
-        console.log("AI UPDATED");
       const currentState = this._stateMachine._currentState;
       if (currentState.Name != 'walk' &&
           currentState.Name != 'run' &&
@@ -233,19 +232,43 @@ export const npc_entity = (() => {
         return;
       }
 
-      if (currentState.Name == 'idle' ||
-          currentState.Name == 'walk') {
-        this._OnAIWalk(timeInSeconds);
-      }
-
       // Update bullet cooldown and shoot if time is up
-      this._bulletCooldown += timeInSeconds;
-      if (this._bulletCooldown >= this._bulletInterval) {
-        console.log("Enemy Attempting To shoot");
-        this._ShootEnemyBullet();
-        this._bulletCooldown = 0.0; // Reset cooldown
-      }
+      // this._bulletCooldown += timeInSeconds;
+      // if (this._bulletCooldown >= this._bulletInterval) {
+      //   // console.log("Enemy Attempting To shoot");
+      //   this._ShootEnemyBullet();
+      //   this._bulletCooldown = 0.0; // Reset cooldown
+      // }
+
+          // Get the direction to the player
+          const dirToPlayer = this._FindPlayer();
+
+          const controlObject = this._target;
+
+          // If there's no direction to the player, exit early
+          if (dirToPlayer.length() === 0) {
+              return;
+          }
+
+          // Set the robot's rotation to face the player
+          const m = new THREE.Matrix4();
+          m.lookAt(
+              new THREE.Vector3(0, 0, 0), // Origin (or a reference point)
+              dirToPlayer, // Direction towards the player
+              new THREE.Vector3(0, 1, 0) // Up vector
+          );
+
+          const _R = controlObject.quaternion.clone();
+          _R.setFromRotationMatrix(m);
+          controlObject.quaternion.copy(_R);
+
+          // Update the parent position and quaternion (optional)
+          this._parent.SetQuaternion(controlObject.quaternion);
+
+    
     }
+
+  
 
     _OnAIWalk(timeInSeconds) {
       const dirToPlayer = this._FindPlayer();
@@ -319,7 +342,6 @@ export const npc_entity = (() => {
     }
 
     Update(timeInSeconds) {
-        console.log('UPDATED');
       if (!this._stateMachine._currentState) {
         return;
       }

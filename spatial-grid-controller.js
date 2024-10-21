@@ -27,10 +27,13 @@ export const spatial_grid_controller = (() => {
     }
 
     FindNearbyEntities(range) {
-      const results = this._grid.FindNear(
-          [this._parent._position.x, this._parent._position.z], [range, range]);
-          
-      return results.filter(c => c.entity != this._parent);
+      const position = [this._parent._position.x, this._parent._position.z];
+
+    const results = this._grid.FindNear(position, [range, range]);
+
+    const filteredResults = results.filter(c => c.entity != this._parent);
+
+    return filteredResults;
     }
   };
 
