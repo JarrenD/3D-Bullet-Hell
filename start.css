@@ -11,7 +11,6 @@ body, html {
     background: linear-gradient(135deg, #1c1c1c, #4a4a4a, #1c1c1c); /* Dark grey gradient */
 }
 
-
 .start-screen {
     display: flex;
     justify-content: center;
@@ -71,4 +70,82 @@ body, html {
 
 .start-button button:active {
     transform: translateY(2px);
+}
+
+/* Position credits button */
+/* Position credits button */
+.credits-button {
+    position: fixed; /* Fix position to the viewport */
+    bottom: 20px; /* Distance from the bottom */
+    right: 20px; /* Distance from the right */
+    z-index: 2; /* Ensure the button is above the overlay */
+}
+
+.credits-button button {
+    padding: 10px 15px;
+    font-size: 1rem;
+    color: #fff; /* Text color */
+    background-color: transparent; /* Make the background transparent */
+     /* Add a border color that stands out */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; /* Add transition for hover effects */
+}
+
+.credits-button button:hover {
+    background-color: rgba(0, 123, 255, 0.2); /* Light blue background on hover */
+     /* Change text color on hover */
+}
+
+
+/* Popup Styles */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8); /* Dark semi-transparent background for popup */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure the popup is on top of other elements */
+}
+
+.popup-content {
+    background: #fff; /* White background for the popup content */
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    width: 300px; /* Set a fixed width for the popup */
+}
+
+.popup-content h2 {
+    margin-top: 0; /* Remove margin from the top */
+}
+
+.popup-content p {
+    margin: 10px 0; /* Add some spacing between paragraphs */
+}
+
+/* Button styles for credits */
+.popup-content button {
+    padding: 10px 20px;
+    margin-top: 20px;
+    background-color: #ff4747; /* Blue button for closing credits */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.popup-content button:hover {
+    background-color: #ff4747; /* Darker blue on hover */
+}
+
+/* Hidden class */
+.hidden {
+    display: none; /* This hides the popup by default */
 }

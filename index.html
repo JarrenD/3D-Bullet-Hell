@@ -17,10 +17,44 @@
         </div>
     </div>
 
+    <!-- Credits Button in the bottom right corner -->
+    <div class="credits-button">
+        <button id="show-credits">Show Credits</button>
+    </div>
+
+    <!-- Credits Section -->
+    <div id="credits" class="popup hidden">
+        <div class="popup-content">
+            <h2>Game Credits</h2>
+            <p>Arena Model: https://skfb.ly/6Vq8K</p>
+            <button id="close-credits">Close</button>
+        </div>
+    </div>
+
     <script>
         function startGame() {
             window.location.href = "game.html"; // Replace 'game.html' with the actual page you want to redirect to
         }
+
+        // Show the credits popup
+        function showCredits() {
+            const credits = document.getElementById('credits');
+            credits.classList.remove('hidden');
+            credits.style.display = 'flex'; // Show credits popup
+        }
+
+        // Hide the credits popup
+        function hideCredits() {
+            const credits = document.getElementById('credits');
+            credits.classList.add('hidden');
+            credits.style.display = 'none'; // Hide credits popup
+        }
+
+        // Event listener for the credits button
+        document.getElementById('show-credits').onclick = showCredits;
+
+        // Event listener for the close button in the credits popup
+        document.getElementById('close-credits').onclick = hideCredits;
     </script>
 </body>
 </html>

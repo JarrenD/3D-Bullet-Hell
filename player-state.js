@@ -293,6 +293,53 @@ export const player_state = (() => {
         }
     };
 
+    class JumpState extends State {
+        constructor(parent) {
+            super(parent);
+          }
+        
+          get Name() {
+            return 'jump';
+          }
+        
+          Enter(prevState) {
+            const jumpAction = this._parent._proxy._animations['jump'].action;
+            jumpAction.reset();
+            jumpAction.play();
+            jumpAction.enabled = true;
+        
+            // Optional: Blend animations for smooth transition
+            // if (prevState) {
+            //   const prevAction = this._parent._proxy._animations[prevState.Name].action;
+            //   jumpAction.crossFadeFrom(prevAction, 0.2, true);
+            // }
+          }
+        
+          Exit() {
+            const jumpAction = this._parent._proxy._animations['jump'].action;
+            jumpAction.enabled = false;
+          }
+        
+        Update(_, input) {
+            // Check if parent exists and has a proxy
+            if (!this._parent || !this._parent._proxy) {
+                return;
+            }
+
+            const controlObject = this._parent._proxy._target;
+
+            // Ensure controlObject is defined and has a position property
+            if (!controlObject || !controlObject.position) {
+                return;
+            }
+
+            // Logic to handle jump state
+            if (input._keys.space && controlObject.position.y <= 0) {
+                this._parent.SetState('idle'); // Return to idle when the jump is finished
+            }
+        }
+    }
+
     return {
         State: State,
         AttackState: AttackState,
@@ -300,7 +347,7 @@ export const player_state = (() => {
         WalkState: WalkState,
         RunState: RunState,
         DeathState: DeathState,
-        //JumpState: JumpState,
+        JumpState: JumpState,
     };
 
 })();

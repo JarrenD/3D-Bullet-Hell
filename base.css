@@ -1,9 +1,105 @@
-body {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    background: #000000;
-    margin: 0;
-    padding: 0;
-    overscroll-behavior: none;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Dark gradient background for the page */
+body, html {
+  height: 100%;
+  background: linear-gradient(135deg, #1c1c1c, #4a4a4a, #1c1c1c);
+}
+
+/* Popup styling */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Semi-transparent dark overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: #2c2c2c; /* Dark grey popup background */
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.7);
+  z-index: 1001;
+  max-width: 400px;
+  width: 100%;
+}
+
+.popup-content h2 {
+  font-size: 2rem;
+  color: #fff;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.popup-content p {
+  color: #ddd;
+  margin: 20px 0;
+}
+
+/* Button styles inside popup */
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  font-size: 1.2rem;
+  background-color: #ff4747; /* Red button for a striking contrast */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+button:hover {
+  background-color: #e33c3c;
+  transform: translateY(-5px);
+}
+
+button:active {
+  transform: translateY(2px);
+}
+
+/* Hidden class to initially hide the popup */
+.hidden {
+  display: none;
+}
+
+.progress-bar-container {
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%, 0); /* Center horizontally */
+   /* Add margin to push down */
+  width: 100%;
+  height: 100%; /* Change this if needed */
+  background: linear-gradient(135deg, #1c1c1c, #4a4a4a, #1c1c1c);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#progress-bar{
+  width: 30%;
+  margin-top: 0.5%;
+  height: 20px;
+  
+}
+label{
+  color: white;
+  font-size: 2rem;
+}

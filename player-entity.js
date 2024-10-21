@@ -24,6 +24,7 @@ export const player_entity = (() => {
       this._AddState('run', player_state.RunState);
       this._AddState('attack', player_state.AttackState);
       this._AddState('death', player_state.DeathState);
+      this._AddState('jump', player_state.JumpState);
     }
   };
   
@@ -69,6 +70,7 @@ function calculateTangentialDirection(centerX, centerZ, posX, posZ, direction) {
       this._acceleration = new THREE.Vector3(80, 1000, 50.0);
       this._velocity = new THREE.Vector3(0, 0, 0);
       this._position = new THREE.Vector3();
+      this._jumpVelocity = 100;
 
       this._bullets = [];
       this._lastBulletTime = 0; // Time when the last bullet was fired
@@ -145,6 +147,9 @@ function calculateTangentialDirection(centerX, centerZ, posX, posZ, direction) {
         loader.load('Sword And Shield Walk.fbx', (a) => { _OnLoad('walk', a); });
         loader.load('Sword And Shield Slash.fbx', (a) => { _OnLoad('attack', a); });
         loader.load('Sword And Shield Death.fbx', (a) => { _OnLoad('death', a); });
+        loader.setPath('./resources/');
+        //loader.load('Jump.fbx', (a) => { _OnLoad('jump', a); });
+
       });
     }
 
@@ -220,13 +225,29 @@ function calculateTangentialDirection(centerX, centerZ, posX, posZ, direction) {
       const _Q = new THREE.Quaternion();
       const _A = new THREE.Vector3();
       const _R = controlObject.quaternion.clone();
+
+      // Grounded check and jump logic
+      if (controlObject.position.y <= 0.1) {
+        controlObject.position.y = 0;  // Ensure the character stays on the ground
+        this._currentlyJumping = false;  // Allow jumping again
+        velocity.y = 0;  // Stop downward velocity when grounded
+      } else {
+          velocity.y -= 9.8 * timeInSeconds*20;  // Apply gravity
+      }
+
+      // Jumping input (space key)
+      if (input._keys.space && !this._currentlyJumping && controlObject.position.y === 0) {
+          this._currentlyJumping = true;
+          velocity.y = this._jumpVelocity;  // Apply upward velocity for the jump
+          //this._stateMachine.SetState('jump');
+      }
     
-      if(controlObject.position.y> 0){
-        velocity.y = velocity.y-9.8;
-      }
-      if(controlObject.position.y< 0){
-        controlObject.position.y=0;
-      }
+      // if(controlObject.position.y> 0){
+      //   velocity.y = velocity.y-9.8;
+      // }
+      // if(controlObject.position.y< 0){
+      //   controlObject.position.y=0;
+      // }
 
       const acc = this._acceleration.clone();
       if (input._keys.shift) {
