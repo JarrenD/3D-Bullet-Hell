@@ -119,6 +119,7 @@ export const npc_entity = (() => {
          // Update bounding box after model is loaded
          this._boundingBox.setFromObject(this._target);
 
+
         this._mixer = new THREE.AnimationMixer(this._target);
 
         const fbx = glb;
@@ -147,6 +148,10 @@ export const npc_entity = (() => {
     }
 
     _ShootEnemyBullet() {
+      
+      //console.log("+this._params.playerList: "+this._params.playerList);
+      //console.dir(this._params.playerList);
+
       // Enemy's current position (NPC's position)
       const enemyPosition = new THREE.Vector3(0, 12, 40);
 
@@ -159,6 +164,7 @@ export const npc_entity = (() => {
         startPosition: enemyPosition,
         targetPosition: targetPosition,
         speed: 30.0,
+        players:this._params.playerList,
       });
       this._bullets.push(enemyBullet);
       
@@ -230,6 +236,7 @@ export const npc_entity = (() => {
     }
 
     _UpdateAI(timeInSeconds) {
+      //console.table("npcs: "+this._params.npcList[0]);
       const currentState = this._stateMachine._currentState;
       if (currentState.Name != 'walk' &&
           currentState.Name != 'run' &&

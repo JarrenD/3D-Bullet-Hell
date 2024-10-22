@@ -74,6 +74,7 @@ class BulletHell {
         this._camera.position.set(25, 10, 25);
 
         this._npcList = [];
+        this._playerList=[];
 
         // const controls = new OrbitControls(
         //     this._camera, this._threejs.domElement);
@@ -195,6 +196,7 @@ class BulletHell {
             scene: this._scene,
             resourceName: 'George.fbx',
             resourceTexture: 'George_Texture.png',
+            playerList: this._playerList,
         }));
         boss.AddComponent(
             new health_component.HealthComponent({
@@ -236,8 +238,8 @@ class BulletHell {
         this._entityManager.Add(player, 'player');
         player.AddComponent(new health_component.HealthComponent({
             updateUI: true,
-            health: 100,
-            maxHealth: 100,
+            health: 5,
+            maxHealth: 5,
             strength: 50,
             wisdomness: 5,
             benchpress: 20,
@@ -245,6 +247,8 @@ class BulletHell {
             experience: 0,
             level: 1,
         }));
+
+        this._playerList.push(player.GetComponent('BasicCharacterController'));
 
         const camera = new entity.Entity();
         camera.AddComponent(

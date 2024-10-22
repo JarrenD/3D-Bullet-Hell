@@ -92,6 +92,18 @@ button:active {
   justify-content: center;
   align-items: center;
 }
+.container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+.ui {
+  position: absolute; /* Allows positioning relative to the container */
+  top: 10px; /* Adjust as needed for vertical positioning */
+  left: 10px; /* Adjust as needed for horizontal positioning */
+  z-index: 100; /* Ensure it appears on top of other elements */
+}
 
 .health-ui {
   background-image: url('./resources/icons/ui/health-bar.png');
@@ -106,8 +118,6 @@ button:active {
   max-width: 200px;
   height: 40px;
   position: relative;
-  top: 215px;
-  left: 260px;
   border-style: solid;
   border-width: 2px;
   border-color: black;

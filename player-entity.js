@@ -76,6 +76,7 @@ function calculateTangentialDirection(centerX, centerZ, posX, posZ, direction) {
       this._lastBulletTime = 0; // Time when the last bullet was fired
       this._bulletCooldown = 0.2; // Cooldown in seconds
 
+      this._boundingBox = new THREE.Box3();
       this._currentlyJumping = false;
       this._theta = 0;
       this._centerPoint = new THREE.Vector3(0, 0, 40); // Center of the circular path
@@ -116,6 +117,9 @@ function calculateTangentialDirection(centerX, centerZ, posX, posZ, direction) {
             c.material.map.encoding = THREE.sRGBEncoding;
           }
         });
+
+         // Update bounding box after model is loaded
+         this._boundingBox.setFromObject(this._target);
 
         this.Broadcast({
             topic: 'load.character',
@@ -190,6 +194,10 @@ function calculateTangentialDirection(centerX, centerZ, posX, posZ, direction) {
       if (this._mixer) {
         this._mixer.update(timeInSeconds);
       }
+
+      // Update the bounding box based on the player's current position
+  this._boundingBox.setFromObject(this._target);
+
 
       // HARDCODED
       if (this._stateMachine._currentState._action) {

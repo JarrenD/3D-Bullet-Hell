@@ -46,6 +46,7 @@ export class Bullet extends entity.Component {
     _CheckCollision() {
         const npcs = this._params.npcs; // List of NPCs passed from scene or manager
         for (let npc of npcs) {
+            //console.dir(npc);
             if (npc._boundingBox.intersectsSphere(this._boundingSphere)) {
                 console.log("Bullet hit NPC:");  // <-- Log message here
 
