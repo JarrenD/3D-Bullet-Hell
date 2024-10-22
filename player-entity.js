@@ -121,6 +121,13 @@ function calculateTangentialDirection(centerX, centerZ, posX, posZ, direction) {
          // Update bounding box after model is loaded
          this._boundingBox.setFromObject(this._target);
 
+         // Create a small offset to reduce the size of the bounding box
+const offset = new THREE.Vector3(0.1, 0.1, 0.1); // Adjust these values as needed for each axis
+
+// Shrink the bounding box by applying the offset
+this._boundingBox.min.add(offset);
+this._boundingBox.max.sub(offset);
+
         this.Broadcast({
             topic: 'load.character',
             model: this._target,
