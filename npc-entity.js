@@ -59,7 +59,7 @@ export const npc_entity = (() => {
       this._position = new THREE.Vector3();
 
       this._bulletCooldown = 0.0; // Cooldown timer for shooting bullets
-      this._bulletInterval = 3; // 1 second interval between bullets
+      this._bulletInterval = 5; // 1 second interval between bullets
 
       this._bullets = [];
 
@@ -147,8 +147,8 @@ export const npc_entity = (() => {
       });
     }
 
-    _ShootEnemyBullet(x,y,z) {
-      const enemyPosition = new THREE.Vector3(0, 3, 40);
+    _ShootEnemyBullet(x,y,z,heightOffestStart) {
+      const enemyPosition = new THREE.Vector3(0, heightOffestStart, 40);
 
       //const targetPosition = new THREE.Vector3(0, 6, 80);
       const targetPosition = new THREE.Vector3(x, y, z);
@@ -183,7 +183,7 @@ export const npc_entity = (() => {
           // Optionally change height (y) for a vertical spiral effect
           const y = center.y + heightOffset * (i / bulletCount);
     
-          this._ShootEnemyBullet(x, y, z);
+          this._ShootEnemyBullet(x, y, z,3);
     
           // Increment angle for the next bullet
           currentAngle += angleIncrement;
@@ -191,7 +191,46 @@ export const npc_entity = (() => {
       }
     }
     
+    _ShootEnemyJumpRingBullets(bulletCount, radius, heightOffset) {
+      const center = new THREE.Vector3(0, heightOffset, 40); // Low height for jump-over effect
+      const angleIncrement = (2 * Math.PI) / bulletCount; // Evenly spaced bullets in a circle
+      let currentAngle = 0;
+    
+      for (let i = 0; i < bulletCount; i++) {
+        // Calculate the target position in a circular pattern
+        const x = center.x + radius * Math.cos(currentAngle);
+        const z = center.z + radius * Math.sin(currentAngle);
+        
+        this._ShootEnemyBullet(x, center.y, z,0); // Shoot bullet in the calculated position
+        
+        // Increment angle for the next bullet
+        currentAngle += angleIncrement;
+      }
+    }
 
+    _ShootEnemyRotatingGapBullets(bulletCount, radius, gapCount, rotations) {
+      const center = new THREE.Vector3(0, 0, 40);
+      const fullCircle = 2 * Math.PI;
+      const angleIncrement = fullCircle / bulletCount; 
+      const rotationIncrement = (Math.PI / 6); // 30 degrees in radians
+      const gapSize = fullCircle / gapCount; // Determines size of the gaps in radians
+      
+      for (let r = 0; r < rotations; r++) {
+        setTimeout(() => {
+          let currentAngle = r * rotationIncrement; // Rotate by 30 degrees each time
+          for (let i = 0; i < bulletCount; i++) {
+            if (i % gapCount !== 0) { // Skip bullets at intervals to create gaps
+              const x = center.x + radius * Math.cos(currentAngle);
+              const z = center.z + radius * Math.sin(currentAngle);
+              const y = center.y; // Low on the ground
+              this._ShootEnemyBullet(x, y, z,3);
+            }
+            currentAngle += angleIncrement;
+          }
+        }, r * 500); // Delay each rotation by 0.5 seconds
+      }
+    }
+    
 
     get Position() {
       return this._position;
@@ -268,12 +307,20 @@ export const npc_entity = (() => {
         return;
       }
 
-      // Update bullet cooldown and shoot if time is up
-      this._bulletCooldown += timeInSeconds;
-      if (this._bulletCooldown >= this._bulletInterval) {
-        this._ShootEnemySpiralBullets(45, 80, 3);
-        this._bulletCooldown = 0.0; // Reset cooldown
-      }
+// Update bullet cooldown and shoot if time is up
+this._bulletCooldown += timeInSeconds;
+if (this._bulletCooldown >= this._bulletInterval) {
+  const attack = Math.random();
+  if (attack < 0.33) {
+    this._ShootEnemySpiralBullets(45, 80, 3);
+  } else if (attack < 0.66) {
+    this._ShootEnemyJumpRingBullets(60, 80, 0);
+  } else {
+    this._ShootEnemyRotatingGapBullets(24, 80, 6, 4); // Shoots with gaps, 30-degree rotation, 4 times
+  }
+  this._bulletCooldown = 0.0; // Reset cooldown
+}
+
 
       for (let i = this._bullets.length - 1; i >= 0; i--) {
         const bullet = this._bullets[i];
