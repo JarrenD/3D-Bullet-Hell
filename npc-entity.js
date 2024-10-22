@@ -59,7 +59,7 @@ export const npc_entity = (() => {
       this._position = new THREE.Vector3();
 
       this._bulletCooldown = 0.0; // Cooldown timer for shooting bullets
-      this._bulletInterval = 1.0; // 1 second interval between bullets
+      this._bulletInterval = 3; // 1 second interval between bullets
 
       this._bullets = [];
 
@@ -147,18 +147,12 @@ export const npc_entity = (() => {
       });
     }
 
-    _ShootEnemyBullet() {
-      
-      //console.log("+this._params.playerList: "+this._params.playerList);
-      //console.dir(this._params.playerList);
+    _ShootEnemyBullet(x,y,z) {
+      const enemyPosition = new THREE.Vector3(0, 3, 40);
 
-      // Enemy's current position (NPC's position)
-      const enemyPosition = new THREE.Vector3(0, 12, 40);
+      //const targetPosition = new THREE.Vector3(0, 6, 80);
+      const targetPosition = new THREE.Vector3(x, y, z);
 
-      // Target point to shoot towards
-      const targetPosition = new THREE.Vector3(0, 6, 80);
-
-      // Create and fire an enemy bullet
       const enemyBullet = new entity_bullet_enemy.EnemyBullet({
         scene: this._params.scene,
         startPosition: enemyPosition,
@@ -168,11 +162,37 @@ export const npc_entity = (() => {
       });
       this._bullets.push(enemyBullet);
       
-      
-      // Add the bullet to the scene
-
-      //this._params.scene.add(enemyBullet);
     }
+
+    _ShootEnemySpiralBullets(bulletCount, spiralRadius, revolutions) {
+      //console.log("begining spiral fire");
+      const center = new THREE.Vector3(0, 0, 40);
+      const heightOffset=1;
+
+      const angleIncrement = (2 * Math.PI * revolutions) / bulletCount; // Spread bullets evenly over revolutions
+      let currentAngle = 0;
+      const bulletDelay = 0.2; // Delay between shots
+    
+      for (let i = 0; i < bulletCount; i++) {
+        // Set a timeout for each bullet to create the delay effect
+        setTimeout(() => {
+          // Calculate the target position in the spiral
+          const x = center.x + spiralRadius * Math.cos(currentAngle);
+          const z = center.z + spiralRadius * Math.sin(currentAngle);
+    
+          // Optionally change height (y) for a vertical spiral effect
+          const y = center.y + heightOffset * (i / bulletCount);
+    
+          this._ShootEnemyBullet(x, y, z);
+    
+          // Increment angle for the next bullet
+          currentAngle += angleIncrement;
+        }, i * bulletDelay * 1000); // Delay each bullet by i * 0.2 seconds (converted to ms)
+      }
+    }
+    
+
+
     get Position() {
       return this._position;
     }
@@ -251,8 +271,7 @@ export const npc_entity = (() => {
       // Update bullet cooldown and shoot if time is up
       this._bulletCooldown += timeInSeconds;
       if (this._bulletCooldown >= this._bulletInterval) {
-        //console.log("Enemy Attempting To shoot");
-        this._ShootEnemyBullet();
+        this._ShootEnemySpiralBullets(45, 80, 3);
         this._bulletCooldown = 0.0; // Reset cooldown
       }
 
