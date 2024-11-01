@@ -200,8 +200,8 @@ class BulletHell {
         }));
         boss.AddComponent(
             new health_component.HealthComponent({
-                health: 250,
-                maxHealth: 250,
+                health: 450,
+                maxHealth: 450,
                 strength: 2,
                 wisdomness: 2,
                 benchpress: 3,
