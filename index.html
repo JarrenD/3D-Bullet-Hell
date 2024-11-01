@@ -22,6 +22,11 @@
         <button id="show-credits">Show Credits</button>
     </div>
 
+    <!-- "How to Play" Button in the bottom right corner -->
+    <div class="how-to-play-button">
+        <button id="show-how-to-play">How to Play</button>
+    </div>
+
     <!-- Credits Section -->
     <div id="credits" class="popup hidden">
         <div class="popup-content">
@@ -30,6 +35,19 @@
             <button id="close-credits">Close</button>
         </div>
     </div>
+
+      <!-- How to Play Popup -->
+    <div id="how-to-play" class="popup hidden">
+        <div class="popup-content">
+            <h2>How to Play</h2>
+            <p>1. Move using the WASD keys.</p>
+            <p>2. Shoot at the boss using the L key.</p>
+            <p>3. Avoid the boss attacks and defeat all bosses to win.</p>
+            <p>4. Press escape to restart game.</p>
+            <button id="close-how-to-play">Close</button>
+        </div>
+    </div>
+    
 
     <script>
         function startGame() {
@@ -50,11 +68,29 @@
             credits.style.display = 'none'; // Hide credits popup
         }
 
+         // Show the "How to Play" popup
+        function showHowToPlay() {
+            const howToPlay = document.getElementById('how-to-play');
+            howToPlay.classList.remove('hidden');
+            howToPlay.style.display = 'flex'; // Show "How to Play" popup
+        }
+
+        // Hide the "How to Play" popup
+        function hideHowToPlay() {
+            const howToPlay = document.getElementById('how-to-play');
+            howToPlay.classList.add('hidden');
+            howToPlay.style.display = 'none'; // Hide "How to Play" popup
+        }
+
         // Event listener for the credits button
         document.getElementById('show-credits').onclick = showCredits;
 
         // Event listener for the close button in the credits popup
         document.getElementById('close-credits').onclick = hideCredits;
+
+        // Event listeners for the "How to Play" button and close button
+        document.getElementById('show-how-to-play').onclick = showHowToPlay;
+        document.getElementById('close-how-to-play').onclick = hideHowToPlay;
     </script>
 </body>
 </html>
