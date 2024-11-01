@@ -98,6 +98,9 @@ export const player_entity = (() => {
 
     _OnDeath(msg) {
       this._stateMachine.SetState('death');
+      setTimeout(() => {
+        window.location.href = 'player-death.html'; // Redirect to the new page
+    }, 3000); // 10 seconds in milliseconds
     }
 
     _LoadModels() {
