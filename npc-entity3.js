@@ -94,13 +94,13 @@ export const npc_entity = (() => {
       const totalTime = localStorage.getItem('total-time') + elapsedTime;
       localStorage.setItem('total-time',totalTime);
   
-      // Delay of 10 seconds before changing the page
+      // Delay of 10 seconds before changing the page  dadad
       setTimeout(() => {
-          window.location.href = 'boss_defeated2.html'; // Redirect to the new page
+          window.location.href = 'boss_defeated3.html'; // Redirect to the new page
       }, 3000); // 10 seconds in milliseconds
   }
 
-    _OnPosition(m) {
+    _OnPosition(m) {  
       if (this._target) {
         this._target.position.copy(m.value);
         this._target.position.y = 0.35;
