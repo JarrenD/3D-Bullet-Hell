@@ -284,9 +284,9 @@ export const player_state = (() => {
         Update(_, input) {
             if (input._keys.forward || input._keys.backward) {
                 this._parent.SetState('walk');
-            } else if (input._keys.k) {
-                this._parent.SetState('attack');
-            }
+            } //else if (input._keys.k) {
+                //this._parent.SetState('attack');
+            //}
             // else if (input._keys.space){
             //     this._parent.SetState('jump');
             // }
