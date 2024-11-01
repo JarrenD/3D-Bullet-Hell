@@ -66,7 +66,7 @@ function calculateTangentialDirection(centerX, centerZ, posX, posZ, direction) {
 
     _Init(params) {
       this._params = params;
-      this._decceleration = new THREE.Vector3(-5, -9.8, -5.0);
+      this._decceleration = new THREE.Vector3(-5, -7.5, -5.0);
       this._acceleration = new THREE.Vector3(80, 1000, 50.0);
       this._velocity = new THREE.Vector3(0, 0, 0);
       this._position = new THREE.Vector3();
@@ -122,11 +122,15 @@ function calculateTangentialDirection(centerX, centerZ, posX, posZ, direction) {
          this._boundingBox.setFromObject(this._target);
 
          // Create a small offset to reduce the size of the bounding box
-const offset = new THREE.Vector3(0.1, 0.1, 0.1); // Adjust these values as needed for each axis
+const offset = new THREE.Vector3(0.3, 0.3, 0.3); // Adjust these values as needed for each axis
 
 // Shrink the bounding box by applying the offset
 this._boundingBox.min.add(offset);
 this._boundingBox.max.sub(offset);
+
+// Visualize the bounding box with a helper
+//this._boundingBoxHelper = new THREE.Box3Helper(this._boundingBox, 0x00ff00); // Green color for visibility
+//this._target.add(this._boundingBoxHelper);
 
         this.Broadcast({
             topic: 'load.character',

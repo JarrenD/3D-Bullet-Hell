@@ -194,8 +194,8 @@ class BulletHell {
         boss.AddComponent(new npc_entity.NPCController({
             camera: this._camera,
             scene: this._scene,
-            resourceName: 'George.fbx',
-            resourceTexture: 'George_Texture.png',
+            resourceName: 'Leela.fbx',
+            resourceTexture: 'Leela_Texture.png',
             playerList: this._playerList,
         }));
         boss.AddComponent(

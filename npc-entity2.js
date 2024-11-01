@@ -89,7 +89,7 @@ export const npc_entity = (() => {
   
       // Delay of 10 seconds before changing the page
       setTimeout(() => {
-          window.location.href = 'boss_defeated.html'; // Redirect to the new page
+          window.location.href = 'boss_defeated2.html'; // Redirect to the new page
       }, 10000); // 10 seconds in milliseconds
   }
 

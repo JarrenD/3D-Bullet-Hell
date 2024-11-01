@@ -14,9 +14,10 @@ export class Bullet extends entity.Component {
         this._speed = 100; // Speed of the bullet
         this._lifetime = 1.5; // Time in seconds before the bullet disappears
         this._startTime = Date.now();
+        //this._initialPosition = new THREE.Vector3().copy(params.startPosition || new THREE.Vector3(0, 6, 0));
 
         // Create a white sphere for the bullet
-        const geometry = new THREE.SphereGeometry(0.5, 16, 16); // Adjust size as needed
+        const geometry = new THREE.SphereGeometry(0.5, 4, 4); // Adjust size as needed
         const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
         this._mesh = new THREE.Mesh(geometry, material);
         this._mesh.position.set(0, 6, 0);
@@ -39,6 +40,16 @@ export class Bullet extends entity.Component {
         const direction = new THREE.Vector3(0, 6, 40).sub(this._mesh.position).normalize();
         this._mesh.position.add(direction.multiplyScalar(this._speed * timeInSeconds));
 
+
+         // Check if bullet has traveled 50 units
+        //  console.log(this._mesh.position.x+":"+this._mesh.position.y+":"+this._mesh.position.z);
+        //  const distanceTraveled = this._mesh.position.distanceTo(new THREE.Vector3(0, 40, 0));
+        //  if (distanceTraveled >= 110) {
+        //      this._params.scene.remove(this._mesh);
+        //      this._shouldRemove = true;
+        //      return;
+        //  }
+
          // Check for collisions with NPCs
          this._CheckCollision();
     }
@@ -48,7 +59,7 @@ export class Bullet extends entity.Component {
         for (let npc of npcs) {
             //console.dir(npc);
             if (npc._boundingBox.intersectsSphere(this._boundingSphere)) {
-                console.log("Bullet hit NPC:");  // <-- Log message here
+                //console.log("Bullet hit NPC:");  // <-- Log message here
 
                 const healthComponent = npc.GetComponent('HealthComponent');
                 if (healthComponent) {

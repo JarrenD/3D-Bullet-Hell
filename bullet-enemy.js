@@ -20,7 +20,7 @@ export const entity_bullet_enemy = (() => {
       //console.log("Npcs: "+this._npcs);
 
       // Create a red, glowing sphere
-      const geometry = new THREE.SphereGeometry(1.5, 32, 32); // Bigger sphere size
+      const geometry = new THREE.SphereGeometry(1.5, 4, 4); // Bigger sphere size
       const material = new THREE.MeshStandardMaterial({
         color: 0xff0000,
         emissive: 0xff0000, // Red glow effect
@@ -44,6 +44,7 @@ export const entity_bullet_enemy = (() => {
     }
 
     Update(timeElapsed) {
+      //console.log(timeElapsed);
       const moveDistance = this._speed * timeElapsed;
       this._mesh.position.addScaledVector(this._direction, moveDistance);
 
