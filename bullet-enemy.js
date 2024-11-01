@@ -63,11 +63,11 @@ export const entity_bullet_enemy = (() => {
         //console.dir(player);
         //console.log(player.GetComponent('HealthComponent').GetHealth());
           if (player._boundingBox.intersectsSphere(this._boundingSphere)) {
-              console.log("Bullet hit Player:");  // <-- Log message here
+              //console.log("Bullet hit Player:");  // <-- Log message here
 
               const healthComponent = player.GetComponent('HealthComponent');
               if (healthComponent) {
-                  console.log('healthComponent: '+healthComponent.GetHealth());
+                  //console.log('healthComponent: '+healthComponent.GetHealth());
                   healthComponent.TakeDamage(1); // Reduce health by 1
                   }
 
