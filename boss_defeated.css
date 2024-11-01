@@ -18,18 +18,28 @@ h1 {
     margin-bottom: 20px;
 }
 
+/* Styling for the elapsed time display */
+#elapsed-time {
+    font-size: 24px; /* Font size for the elapsed time */
+    color: #ffcc00; /* Gold color for emphasis */
+    text-align: center; /* Center the text */
+    margin-bottom: 20px; /* Space below the elapsed time */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Subtle shadow for depth */
+}
+
 button {
     padding: 10px 20px;
     font-size: 24px;
     cursor: pointer;
-    background-color: #61dafb; /* Light blue */
+    background-color: #ff4747; /* Red button */
     border: none;
     border-radius: 5px;
     transition: background-color 0.3s;
+    color: #fff;
 }
 
 button:hover {
-    background-color: #21a1f1; /* Darker blue on hover */
+    background-color: #e33c3c; /* Darker red on hover */
 }
 
 /* Center the content */

@@ -9,7 +9,25 @@
 <body>
     <div class="center"> <!-- Center content using flexbox -->
         <h1>BOSS DEFEATED</h1>
-        <button onclick="location.href='game3.html'">Continue</button>
+        <p id="elapsed-time"></p> <!-- Element to display the elapsed time -->
+        <button onclick="location.href='game3.html'">Next level</button>
     </div>
+
+    <script>
+        // Function to display the elapsed time
+        function displayElapsedTime() {
+            const elapsedTime = localStorage.getItem('elapsedTime'); // Get the stored time
+            const elapsedTimeElement = document.getElementById('elapsed-time');
+
+            if (elapsedTime) {
+                elapsedTimeElement.textContent = `Time Taken: ${elapsedTime}`; // Display the time
+            } else {
+                elapsedTimeElement.textContent = 'Time Taken: N/A'; // Fallback if no time is stored
+            }
+        }
+
+        // Call the function to display the elapsed time when the page loads
+        window.onload = displayElapsedTime;
+    </script>
 </body>
 </html>

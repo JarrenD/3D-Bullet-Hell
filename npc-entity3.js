@@ -86,11 +86,13 @@ export const npc_entity = (() => {
 
     _OnDeath(msg) {
       this._stateMachine.SetState('death');
+      const elapsedTime = document.getElementById('timer').textContent;
+      localStorage.setItem('elapsedTime', elapsedTime);
   
       // Delay of 10 seconds before changing the page
       setTimeout(() => {
           window.location.href = 'boss_defeated3.html'; // Redirect to the new page
-      }, 10000); // 10 seconds in milliseconds
+      }, 3000); // 10 seconds in milliseconds
   }
 
     _OnPosition(m) {
