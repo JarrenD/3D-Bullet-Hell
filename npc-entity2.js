@@ -91,8 +91,28 @@ export const npc_entity = (() => {
       this._stateMachine.SetState('death');
       const elapsedTime = document.getElementById('timer').textContent;
       localStorage.setItem('elapsedTime', elapsedTime);
-      const totalTime = localStorage.getItem('total-time') + elapsedTime;
-      localStorage.setItem('total-time',totalTime);
+      // Get the current total time, or initialize to 0 if not present
+      const storedTime = localStorage.getItem('total-time') || '00:00';
+
+      // Function to convert MM:SS to total seconds
+      const timeToSeconds = (timeString) => {
+          const [minutes, seconds] = timeString.split(':').map(Number);
+          return (minutes || 0) * 60 + (seconds || 0); // Convert to total seconds
+      };
+
+      // Convert both elapsed time and stored time to seconds
+      const totalTimeInSeconds = timeToSeconds(storedTime);
+      const elapsedTimeInSeconds = timeToSeconds(elapsedTime);
+
+      // Calculate new total time in seconds
+      const newTotalTimeInSeconds = totalTimeInSeconds + elapsedTimeInSeconds;
+
+      // Convert total seconds back to MM:SS format
+      const newTotalTime = String(Math.floor(newTotalTimeInSeconds / 60)).padStart(2, '0') + ':' + 
+                          String(newTotalTimeInSeconds % 60).padStart(2, '0');
+
+      // Store the updated total time back in local storage
+      localStorage.setItem('total-time', newTotalTime);
   
       // Delay of 10 seconds before changing the page
       setTimeout(() => {

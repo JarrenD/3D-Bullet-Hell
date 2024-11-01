@@ -14,16 +14,25 @@
     </div>
 
     <script>
+        
+        
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = Math.floor(seconds % 60);
+            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
+
         // Function to display the elapsed time
         function displayElapsedTime() {
-            const elapsedTime = localStorage.getItem('elapsedTime'); // Get the stored time
+            const elapsedTime = localStorage.getItem('elapsedTime') || '00:00'; // Get the stored time
+            const totalTime = localStorage.getItem('total-time') || '00:00'; // Default to '00:00' if not present
             const elapsedTimeElement = document.getElementById('elapsed-time');
 
-            if (elapsedTime) {
-                elapsedTimeElement.textContent = `Time Taken: ${elapsedTime}    Total Time: ${localStorage.getItem('total-time')}`; // Display the time
-            } else {
-                elapsedTimeElement.textContent = 'Time Taken: N/A'; // Fallback if no time is stored
-            }
+            // Ensure that elapsedTime is always in MM:SS format
+            const formattedElapsedTime = elapsedTime;
+            const formattedTotalTime = totalTime; // Format total time as MM:SS
+
+            elapsedTimeElement.textContent = `Time Taken: ${formattedElapsedTime} | Total Time: ${formattedTotalTime}`; // Display the time
         }
 
         // Call the function to display the elapsed time when the page loads
