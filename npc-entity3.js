@@ -186,7 +186,7 @@ export const npc_entity = (() => {
       //this._SpawnEnemyWalls(5);
     }
 
-    _ShootEnemyBullet(x,y,z,heightOffestStart) {
+    _ShootEnemyBullet(x,y,z,heightOffestStart,fast=44) {
       const enemyPosition = new THREE.Vector3(0, heightOffestStart, 40);
 
       //const targetPosition = new THREE.Vector3(0, 6, 80);
@@ -196,7 +196,7 @@ export const npc_entity = (() => {
         scene: this._params.scene,
         startPosition: enemyPosition,
         targetPosition: targetPosition,
-        speed: 30.0,
+        speed: fast,
         players:this._params.playerList,
       });
       this._bullets.push(enemyBullet);
@@ -228,6 +228,22 @@ export const npc_entity = (() => {
     
           // Increment angle for the next bullet
           currentAngle += angleIncrement;
+        }, i * bulletDelay * 1000); // Delay each bullet by i * 0.2 seconds (converted to ms)
+      }
+    }
+
+    _ShootEnemyStreem(bulletCount) {
+      //console.log("begining spiral fire");
+      const center = new THREE.Vector3(0, 0, 40);
+      const heightOffset=1;
+
+      const bulletDelay = 0.2; // Delay between shots
+    
+      for (let i = 0; i < bulletCount; i++) {
+        // Set a timeout for each bullet to create the delay effect
+        setTimeout(() => {
+          this._params.playerList[0]._position
+          this._ShootEnemyBullet(this._params.playerList[0]._position.x, this._params.playerList[0]._position.y, this._params.playerList[0]._position.z,3,100);
         }, i * bulletDelay * 1000); // Delay each bullet by i * 0.2 seconds (converted to ms)
       }
     }
@@ -269,7 +285,7 @@ export const npc_entity = (() => {
               currentAngle += angleIncrement;
           }
         }, r * 500); // Delay each rotation by 0.5 seconds
-        offset=offset+45;
+        offset=offset+60;
         //console.log("OFFSET : "+ offset);
       }
     }
@@ -354,6 +370,8 @@ export const npc_entity = (() => {
     }
 
     _UpdateAI(timeInSeconds) {
+
+      //console.table(this._params.playerList[0]._position);
       //console.table("npcs: "+this._params.npcList[0]);
       const currentState = this._stateMachine._currentState;
       if (currentState.Name != 'walk' &&
@@ -366,6 +384,9 @@ export const npc_entity = (() => {
         return;
       }
 
+      if(this._parent.GetComponent('HealthComponent').GetHealth()<(450/2)){
+        this._bulletInterval=3;
+      }
 // Update bullet cooldown and shoot if time is up
 this._bulletCooldown += timeInSeconds;
 if (this._bulletCooldown >= this._bulletInterval) {
@@ -374,13 +395,19 @@ if (this._bulletCooldown >= this._bulletInterval) {
     this._canSpawnWall=false;
   }
   const attack = Math.random();
-  if (attack < 0.33) {
-    this._ShootEnemySpiralBullets(80, 80, 3);
-  } else if (attack < 0.66) {
+  //this._ShootEnemyStreem(20);
+  if (attack < 0.25) {
+    this._ShootEnemySpiralBullets(100, 80, 6);
+  } else if (attack < 0.50) {
     this._ShootEnemyJumpRingBullets(60, 80, 0);
-  } else {
+  } else if (attack < 0.75 && this._parent.GetComponent('HealthComponent').GetHealth()<(450/2)) {
+    this._ShootEnemyStreem(20);
+  } 
+  else {
     this._ShootEnemyRotatingGapBullets(40, 80, 24, 4); // Shoots with gaps, 30-degree rotation, 4 times
   }
+
+
   this._bulletCooldown = 0.0; // Reset cooldown
 }
 

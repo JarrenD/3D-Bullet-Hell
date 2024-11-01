@@ -67,10 +67,10 @@ export const player_entity = (() => {
     _Init(params) {
       this._params = params;
       this._decceleration = new THREE.Vector3(-5, -7.5, -5.0);
-      this._acceleration = new THREE.Vector3(80, 1000, 50.0);
+      this._acceleration = new THREE.Vector3(80, 0, 50.0);
       this._velocity = new THREE.Vector3(0, 0, 0);
       this._position = new THREE.Vector3();
-      this._jumpVelocity = 100;
+      this._jumpVelocity = 84;
 
       this._bullets = [];
       this._lastBulletTime = 0; // Time when the last bullet was fired
@@ -206,7 +206,6 @@ export const player_entity = (() => {
     }
 
     Update(timeInSeconds) {
-      //console.log('UPDATED');
       if (!this._stateMachine._currentState) {
         return;
       }
@@ -250,7 +249,7 @@ export const player_entity = (() => {
 
       frameDecceleration.multiplyScalar(timeInSeconds);
       frameDecceleration.z = Math.sign(frameDecceleration.z) * Math.min(
-        Math.abs(frameDecceleration.z), Math.abs(velocity.z));
+      Math.abs(frameDecceleration.z), Math.abs(velocity.z));
 
       velocity.add(frameDecceleration);
 
@@ -270,17 +269,14 @@ export const player_entity = (() => {
 
       // Jumping input (space key)
       if (input._keys.space && !this._currentlyJumping && controlObject.position.y === 0) {
-        this._currentlyJumping = true;
-        velocity.y = this._jumpVelocity;  // Apply upward velocity for the jump
-        //this._stateMachine.SetState('jump');
+        //if( (this._parent._position.x<-2 || this._parent._position.x>2) &&  (this._parent._position.z<98 || this._parent._position.z>102)){
+          this._currentlyJumping = true;
+          velocity.y = this._jumpVelocity; 
+        //}
+        
       }
 
-      // if(controlObject.position.y> 0){
-      //   velocity.y = velocity.y-9.8;
-      // }
-      // if(controlObject.position.y< 0){
-      //   controlObject.position.y=0;
-      // }
+    
 
       const acc = this._acceleration.clone();
       if (input._keys.shift) {
@@ -294,15 +290,7 @@ export const player_entity = (() => {
         velocity.z -= acc.z * timeInSeconds;
       }
 
-      //   if(input._keys.space&& !this._currentlyJumping){
-      //     this._currentlyJumping=true;
-      //     for (let index = 0; index < 12; index++) {
-      //         velocity.y += acc.y *timeInSeconds; 
-      //     }
-      //     setTimeout(() => { 
-      //         this._currentlyJumping=false;
-      //     }, 1.5);
-      //   }
+      
 
       const currentTime = Date.now() / 1000; // Get current time in seconds
       if (input._keys.l && (currentTime - this._lastBulletTime) >= this._bulletCooldown) {
