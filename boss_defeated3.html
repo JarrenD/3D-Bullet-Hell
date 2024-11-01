@@ -20,7 +20,7 @@
             const elapsedTimeElement = document.getElementById('elapsed-time');
 
             if (elapsedTime) {
-                elapsedTimeElement.textContent = `Time Taken: ${elapsedTime}`; // Display the time
+                elapsedTimeElement.textContent = `Time Taken: ${elapsedTime}    Total Time: ${localStorage.getItem('total-time')}`; // Display the time
             } else {
                 elapsedTimeElement.textContent = 'Time Taken: N/A'; // Fallback if no time is stored
             }
