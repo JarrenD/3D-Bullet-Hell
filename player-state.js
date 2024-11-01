@@ -342,7 +342,7 @@ export const player_state = (() => {
 
     return {
         State: State,
-        AttackState: AttackState,
+        //AttackState: AttackState,
         IdleState: IdleState,
         WalkState: WalkState,
         RunState: RunState,

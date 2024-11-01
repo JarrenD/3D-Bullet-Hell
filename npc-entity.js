@@ -44,7 +44,7 @@ export const npc_entity = (() => {
       this._AddState('idle', player_state.IdleState);
       this._AddState('walk', player_state.WalkState);
       this._AddState('death', player_state.DeathState);
-      this._AddState('attack', player_state.AttackState);
+      //this._AddState('attack', player_state.AttackState);
     }
   };
 
@@ -151,7 +151,7 @@ export const npc_entity = (() => {
         this._animations['idle'] = _FindAnim('Idle');
         this._animations['walk'] = _FindAnim('Walk');
         this._animations['death'] = _FindAnim('Death');
-        this._animations['attack'] = _FindAnim('Bite_Front');
+        //this._animations['attack'] = _FindAnim('Bite_Front');
 
         this._stateMachine.SetState('idle');
         //console.log("Animations End");
@@ -248,11 +248,11 @@ export const npc_entity = (() => {
       const wallAttackParams = {
         scene: this._params.scene,
         position: new THREE.Vector3(0, 0, 40), // Spawn position for walls
-        radius: 60, // Distance from center for wall positions
+        radius: 65, // Distance from center for wall positions
         height: 60, // Wall height
         width: 2, // Wall width
         players: this._params.playerList, // Pass players list if needed
-        wallCount: 4, // Number of walls to spawn
+        wallCount: 8, // Number of walls to spawn
       };
     
       // Use setTimeout to wait for the specified delay before spawning walls
