@@ -134,3 +134,30 @@ label{
   color: white;
   font-size: 2rem;
 }
+
+/* Timer container styling */
+.timer-container {
+  position: fixed;
+  top: 10px; /* Distance from the top of the page */
+  right: 10px; /* Distance from the right of the page */
+  background-color: #2c2c2c; /* Dark grey background to match the popup style */
+  color: white; /* White text for contrast */
+  padding: 10px 20px; /* Padding to create space inside the box */
+  border-radius: 8px; /* Rounded corners for a smoother look */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+  font-size: 1.2rem; /* Font size for readability */
+  text-align: center; /* Center the text */
+  z-index: 200; /* Ensure the timer is on top of other UI elements */
+}
+
+/* Timer text styling */
+.timer-container h2 {
+  font-size: 1.5rem; /* Font size for the label */
+  color: #fff; /* White color for the label */
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6); /* Slight text shadow */
+}
+
+.timer-container span {
+  font-weight: bold; /* Bold text for the timer value */
+  font-size: 1.2rem; /* Font size for the timer value */
+}

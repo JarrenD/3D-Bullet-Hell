@@ -22,6 +22,11 @@
     <progress id="progress-bar" value="0" max="100"></progress>
   </div>
 
+  <!-- Timer Display -->
+  <div class="timer-container">
+    <h2>Time: <span id="timer">00:00</span></h2>
+  </div>
+
   <!-- Main container for the 3D scene -->
   <div class="container" id="container"></div>
   <div class="ui">
@@ -33,6 +38,33 @@
   <!-- JavaScript for Escape key and Popup functionality -->
   <script>
     window.onload = function() {
+      // Initialize the timer variables
+      let startTime = Date.now();
+      const timerElement = document.getElementById('timer');
+
+      // Function to update the timer
+      function updateTimer() {
+        const currentTime = Date.now();
+        const elapsedTime = currentTime - startTime; // Time in milliseconds
+
+        // Calculate minutes and seconds
+        const minutes = Math.floor(elapsedTime / 60000);
+        const seconds = Math.floor((elapsedTime % 60000) / 1000);
+
+        // Format minutes and seconds to always have two digits
+        const formattedMinutes = String(minutes).padStart(2, '0');
+        const formattedSeconds = String(seconds).padStart(2, '0');
+
+        // Update the timer element
+        timerElement.textContent = `${formattedMinutes}:${formattedSeconds}`;
+
+        // Keep updating the timer every frame
+        requestAnimationFrame(updateTimer);
+      }
+
+      // Start the timer
+      updateTimer();
+
       // Show the popup
       function showRestartPopup() {
         const popup = document.getElementById('restart-popup');
