@@ -13,13 +13,13 @@ export const entity_wall_enemy = (() => {
       this._height = params.height || 20;
       this._width = params.width || 2;
       this._players = params.players;
+      this._spinning = params.spinning || false;  // New parameter to control spinning
 
       this._shouldRemove = false;
       this._hitboxActive = false;
       this._transitionDuration = 1.5;
       this._elapsedTime = 0;
 
-      // Define wall geometry
       const geometry = new THREE.BoxGeometry(this._width, this._height, 100);
       const material = new THREE.MeshStandardMaterial({
         color: 0x00ff00,
@@ -28,20 +28,11 @@ export const entity_wall_enemy = (() => {
       });
       this._mesh = new THREE.Mesh(geometry, material);
 
-      // Position the wall
       this._mesh.position.copy(this._position);
       this._scene.add(this._mesh);
 
-      // Initialize segmented bounding boxes
       this._segmentBoundingBoxes = [];
       this._CreateSegmentBoundingBoxes();
-
-      // Add visual bounding box helpers for debugging (optional)
-      // this._boxHelpers = this._segmentBoundingBoxes.map((box) => {
-      //   const helper = new THREE.Box3Helper(box, new THREE.Color(0x0000ff));
-      //   this._scene.add(helper);
-      //   return helper;
-      // });
     }
 
     _CreateSegmentBoundingBoxes() {
@@ -54,7 +45,6 @@ export const entity_wall_enemy = (() => {
         const localPosition = new THREE.Vector3(0, 0, -wallLength / 2 + i * segmentLength + segmentLength / 2);
         const worldPosition = localPosition.applyQuaternion(rotationQuaternion).add(this._mesh.position);
 
-        // Create and position each bounding box in the rotated position
         const segmentBoundingBox = new THREE.Box3().setFromCenterAndSize(
           worldPosition,
           new THREE.Vector3(this._width, this._height, segmentLength)
@@ -69,15 +59,31 @@ export const entity_wall_enemy = (() => {
 
       if (!this._hitboxActive && this._elapsedTime >= this._transitionDuration) {
         this._hitboxActive = true;
-        console.log("Hitbox activated, changing color to red");
         this._mesh.material.color.set(0x990000);
         this._mesh.material.emissive.set(0xff0000);
       }
 
-      // Update segment bounding boxes based on wall rotation and position
-      this._UpdateSegmentBoundingBoxes();
+      // Spin the wall if the spinning flag is set to true
+      if (this._spinning) {
+        const spinSpeed = 0.2;  // Adjust this for faster or slower rotation (lower value = slower)
+        const centerX = 0;
+        const centerZ = 40;
 
-      // Check collisions with players
+        // Calculate the angle to rotate this frame
+        const angle = spinSpeed * deltaTime;
+
+        // Rotate around the point (0, 40)
+        const offsetX = this._mesh.position.x - centerX;
+        const offsetZ = this._mesh.position.z - centerZ;
+        const rotatedX = offsetX * Math.cos(angle) - offsetZ * Math.sin(angle);
+        const rotatedZ = offsetX * Math.sin(angle) + offsetZ * Math.cos(angle);
+
+        // Update the mesh position to the new rotated position
+        this._mesh.position.set(centerX + rotatedX, this._mesh.position.y, centerZ + rotatedZ);
+        this._mesh.lookAt(centerX, this._mesh.position.y, centerZ);  // Keeps the wall facing the center
+      }
+
+      this._UpdateSegmentBoundingBoxes();
       this._CheckCollision();
     }
 
@@ -131,7 +137,28 @@ export const entity_wall_enemy = (() => {
       const wall = new EnemyWall(wallParams);
       walls.push(wall);
 
-      // Rotate the wall to face the center
+      wall._mesh.lookAt(params.position);
+    }
+    return walls;
+  }
+
+  function SpawnSpinningWalls(params) {
+    const wallCount = params.wallCount || 8;
+    const angleIncrement = (2 * Math.PI) / wallCount;
+    const walls = [];
+
+    for (let i = 0; i < wallCount; i++) {
+      const angle = i * angleIncrement;
+      const x = params.position.x + params.radius * Math.cos(angle);
+      const z = params.position.z + params.radius * Math.sin(angle);
+      const wallParams = {
+        ...params,
+        position: new THREE.Vector3(x, params.position.y, z),
+        spinning: true,  // Enable spinning for each wall
+      };
+      const wall = new EnemyWall(wallParams);
+      walls.push(wall);
+
       wall._mesh.lookAt(params.position);
     }
     return walls;
@@ -140,5 +167,6 @@ export const entity_wall_enemy = (() => {
   return {
     EnemyWall: EnemyWall,
     SpawnWalls: SpawnWalls,
+    SpawnSpinningWalls: SpawnSpinningWalls,
   };
 })();

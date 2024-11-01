@@ -349,7 +349,7 @@ export const npc_entity = (() => {
 this._bulletCooldown += timeInSeconds;
 if (this._bulletCooldown >= this._bulletInterval) {
   if(this._canSpawnWall && this._parent.GetComponent('HealthComponent').GetHealth()<this._healthThreshold){
-    this._SpawnEnemyWalls(10);
+    this._SpawnEnemyWalls(1);
     this._canSpawnWall=false;
   }
   const attack = Math.random();

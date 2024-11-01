@@ -68,6 +68,9 @@ export const npc_entity = (() => {
       this._bullets = [];
       this._enemyWalls = [];
 
+      this._healthThreshold= 350/2;
+      this._canSpawnWall=true;
+
       this._boundingBox = new THREE.Box3();
 
       this._animations = {};
@@ -91,13 +94,13 @@ export const npc_entity = (() => {
       const totalTime = localStorage.getItem('total-time') + elapsedTime;
       localStorage.setItem('total-time',totalTime);
   
-      // Delay of 10 seconds before changing the page
+      // Delay of 10 seconds before changing the page  dadad
       setTimeout(() => {
           window.location.href = 'boss_defeated3.html'; // Redirect to the new page
       }, 3000); // 10 seconds in milliseconds
   }
 
-    _OnPosition(m) {
+    _OnPosition(m) {  
       if (this._target) {
         this._target.position.copy(m.value);
         this._target.position.y = 0.35;
@@ -209,6 +212,7 @@ export const npc_entity = (() => {
     }
     
     _ShootEnemyJumpRingBullets(bulletCount, radius, heightOffset) {
+      bulletCount= bulletCount*2;
       const center = new THREE.Vector3(0, heightOffset, 40); // Low height for jump-over effect
       const angleIncrement = (2 * Math.PI) / bulletCount; // Evenly spaced bullets in a circle
       let currentAngle = 0;
@@ -231,37 +235,38 @@ export const npc_entity = (() => {
       const angleIncrement = fullCircle / bulletCount; 
       const rotationIncrement = (Math.PI / 6); // 30 degrees in radians
       const gapSize = fullCircle / gapCount; // Determines size of the gaps in radians
-      
+      let offset = 0;
+
       for (let r = 0; r < rotations; r++) {
         setTimeout(() => {
-          let currentAngle = r * rotationIncrement; // Rotate by 30 degrees each time
+          let currentAngle = r * rotationIncrement+offset; // Rotate by 30 degrees each time
           for (let i = 0; i < bulletCount; i++) {
-            if (i % gapCount !== 0) { // Skip bullets at intervals to create gaps
               const x = center.x + radius * Math.cos(currentAngle);
               const z = center.z + radius * Math.sin(currentAngle);
               const y = center.y; // Low on the ground
               this._ShootEnemyBullet(x, y, z,3);
-            }
-            currentAngle += angleIncrement;
+              currentAngle += angleIncrement;
           }
         }, r * 500); // Delay each rotation by 0.5 seconds
+        offset=offset+45;
+        //console.log("OFFSET : "+ offset);
       }
     }
     _SpawnEnemyWalls(delay = 10) { // Default delay is set to 10 seconds
       const wallAttackParams = {
         scene: this._params.scene,
         position: new THREE.Vector3(0, 0, 40), // Spawn position for walls
-        radius: 60, // Distance from center for wall positions
+        radius: 70, // Distance from center for wall positions
         height: 60, // Wall height
         width: 2, // Wall width
         players: this._params.playerList, // Pass players list if needed
-        wallCount: 4, // Number of walls to spawn
+        wallCount: 8, // Number of walls to spawn
       };
     
       // Use setTimeout to wait for the specified delay before spawning walls
       setTimeout(() => {
         // Call the SpawnWalls function with the parameters
-        this._enemyWalls = entity_wall_enemy.SpawnWalls(wallAttackParams);
+        this._enemyWalls = entity_wall_enemy.SpawnSpinningWalls(wallAttackParams);
       }, delay * 1000); // Convert seconds to milliseconds
     }
 
@@ -343,13 +348,17 @@ export const npc_entity = (() => {
 // Update bullet cooldown and shoot if time is up
 this._bulletCooldown += timeInSeconds;
 if (this._bulletCooldown >= this._bulletInterval) {
+  if(this._canSpawnWall && this._parent.GetComponent('HealthComponent').GetHealth()<this._healthThreshold){
+    this._SpawnEnemyWalls(1);
+    this._canSpawnWall=false;
+  }
   const attack = Math.random();
   if (attack < 0.33) {
-    this._ShootEnemySpiralBullets(45, 80, 3);
+    this._ShootEnemySpiralBullets(80, 80, 3);
   } else if (attack < 0.66) {
     this._ShootEnemyJumpRingBullets(60, 80, 0);
   } else {
-    this._ShootEnemyRotatingGapBullets(24, 80, 6, 4); // Shoots with gaps, 30-degree rotation, 4 times
+    this._ShootEnemyRotatingGapBullets(40, 80, 24, 4); // Shoots with gaps, 30-degree rotation, 4 times
   }
   this._bulletCooldown = 0.0; // Reset cooldown
 }
@@ -470,6 +479,9 @@ if (this._enemyWalls && Array.isArray(this._enemyWalls)) {
     }
 
     Update(timeInSeconds) {
+      //console.log("Health: "+this._parent.GetComponent('HealthComponent').GetHealth());
+      //console.table(this._parent);
+
       if (!this._stateMachine._currentState) {
         return;
       }
