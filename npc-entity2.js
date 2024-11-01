@@ -91,6 +91,8 @@ export const npc_entity = (() => {
       this._stateMachine.SetState('death');
       const elapsedTime = document.getElementById('timer').textContent;
       localStorage.setItem('elapsedTime', elapsedTime);
+      const totalTime = localStorage.getItem('total-time') + elapsedTime;
+      localStorage.setItem('total-time',totalTime);
   
       // Delay of 10 seconds before changing the page
       setTimeout(() => {

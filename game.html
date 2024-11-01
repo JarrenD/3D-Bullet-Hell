@@ -25,6 +25,7 @@
   <!-- Timer Display -->
   <div class="timer-container">
     <h2>Time: <span id="timer">00:00</span></h2>
+    <button id="toggle-music">Play Music</button> <!-- Music Toggle Button -->
   </div>
 
   <!-- Main container for the 3D scene -->
@@ -34,6 +35,12 @@
       <div class="health-bar" id="health-bar"></div>
     </div>
   </div>
+
+  <!-- Background Music -->
+  <audio id="background-music" loop>
+    <source src="resources/Music/the-dying-110458.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
 
   <!-- JavaScript for Escape key and Popup functionality -->
   <script>
@@ -101,7 +108,33 @@
 
       // Make sure popup is hidden on load
       hideRestartPopup();
+
+      // Music toggle functionality
+      const music = document.getElementById('background-music');
+      const toggleButton = document.getElementById('toggle-music');
+
+      // Initially set the button text to "Play Music"
+      toggleButton.textContent = 'Play Music';
+
+      toggleButton.addEventListener('click', () => {
+        if (music.paused) {
+          music.play();
+          toggleButton.textContent = 'Pause Music';
+          toggleButton.blur();
+        } else {
+          music.pause();
+          toggleButton.textContent = 'Play Music';
+          toggleButton.blur();
+        }
+      });
+      // toggleButton.blur();
     };
+
+    toggleButton.addEventListener('keydown', (event) => {
+    if (event.code === 'Space') {
+      event.preventDefault(); // Prevent the default action of the spacebar
+    }
+  });
   </script>
 
   <!-- Main JavaScript file (for your 3D world) -->
