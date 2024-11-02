@@ -70,7 +70,7 @@ export const player_entity = (() => {
       this._acceleration = new THREE.Vector3(80, 0, 50.0);
       this._velocity = new THREE.Vector3(0, 0, 0);
       this._position = new THREE.Vector3();
-      this._jumpVelocity = 84;
+      this._jumpVelocity = 70;
 
       this._bullets = [];
       this._lastBulletTime = 0; // Time when the last bullet was fired
@@ -206,6 +206,8 @@ export const player_entity = (() => {
     }
 
     Update(timeInSeconds) {
+
+      
       if (!this._stateMachine._currentState) {
         return;
       }
@@ -258,11 +260,17 @@ export const player_entity = (() => {
       const _A = new THREE.Vector3();
       const _R = controlObject.quaternion.clone();
 
+      //console.log("position");
+      //    console.table(controlObject.position);
+      //    console.log("velocity");
+      //    console.table(velocity);
+
       // Grounded check and jump logic
       if (controlObject.position.y <= 0.1) {
         controlObject.position.y = 0;  // Ensure the character stays on the ground
         this._currentlyJumping = false;  // Allow jumping again
         velocity.y = 0;  // Stop downward velocity when grounded
+        
       } else {
         velocity.y -= 9.8 * timeInSeconds * 20;  // Apply gravity
       }
@@ -324,13 +332,14 @@ export const player_entity = (() => {
       } else if (input._keys.right) {
         velocity.x -= acc.x * timeInSeconds; // Move right in x direction
       }
-
-      const targetDirection = new THREE.Vector3(0, 0, 40);
+     
+      const targetDirection = new THREE.Vector3(0, controlObject.position.y, 40);
       const playerPosition = controlObject.position.clone();
       const lookAtDirection = targetDirection.clone().sub(playerPosition).normalize();
       const quaternion = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), lookAtDirection);
 
       controlObject.quaternion.copy(quaternion);
+
 
       const oldPosition = new THREE.Vector3();
       oldPosition.copy(controlObject.position);
