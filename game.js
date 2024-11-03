@@ -73,6 +73,15 @@ class BulletHell {
         this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         this._camera.position.set(25, 10, 25);
 
+                        // Initialize the top-view camera
+        this._topViewCamera = new THREE.OrthographicCamera(
+            -50, 50, 50, -50, near, far  // Adjust these values to match the arena's size
+        );
+        this._topViewCamera.position.set(0, 100, 0);  // Set a high y position for top view
+        this._topViewCamera.lookAt(0, 0, 0);
+
+        // Scene setup
+
         this._npcList = [];
         this._playerList=[];
 
@@ -285,7 +294,6 @@ class BulletHell {
         this._sun.updateMatrixWorld();
         this._sun.target.updateMatrixWorld();
     }
-
     _RAF() {
         requestAnimationFrame((t) => {
             if (this._previousRAF === null) {
@@ -294,7 +302,22 @@ class BulletHell {
 
             this._RAF();
 
+            this._threejs.clear();
+
+            // Render the main camera view
+            this._threejs.setViewport(0, 0, window.innerWidth, window.innerHeight);
             this._threejs.render(this._scene, this._camera);
+
+            // Render the top-view camera in the bottom-left corner
+            const insetWidth = window.innerWidth / 4;
+            const insetHeight = window.innerHeight / 4;
+            this._threejs.setViewport(10, 10, insetWidth, insetHeight);
+            this._threejs.setScissor(10, 10, insetWidth, insetHeight);
+            this._threejs.setScissorTest(true);
+            this._threejs.render(this._scene, this._topViewCamera);
+
+            this._threejs.setScissorTest(false);  // Disable scissor test for main rendering
+
             this._Step(t - this._previousRAF);
             this._previousRAF = t;
         });
