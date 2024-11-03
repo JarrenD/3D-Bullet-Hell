@@ -73,13 +73,11 @@ class BulletHell {
         this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         this._camera.position.set(25, 10, 25);
 
-        // Initialize the top-view camera
+                        // Initialize the top-view camera
         this._topViewCamera = new THREE.OrthographicCamera(
-            window.innerWidth / -2, window.innerWidth / 2,
-            window.innerHeight / 2, window.innerHeight / -2,
-            near, far
+            -50, 50, 50, -50, near, far  // Adjust these values to match the arena's size
         );
-        this._topViewCamera.position.set(0, 100, 0);  // Set a high y position for a top view
+        this._topViewCamera.position.set(0, 100, 0);  // Set a high y position for top view
         this._topViewCamera.lookAt(0, 0, 0);
 
         // Scene setup
@@ -179,9 +177,18 @@ class BulletHell {
     
         loader.load(modelPath, (gltf) => {
             const platform = gltf.scene; // Get the loaded model
-            platform.position.set(0, -7.5, 40); // Set the desired position
-            platform.scale.set(0.01, 0.01, 0.01); // Adjust scale if necessary
-            this._scene.add(platform); // Add the platform to the scene
+            platform.position.set(0, -7.5, 40);
+            platform.scale.set(0.01, 0.01, 0.01);
+        
+            // Enable shadow properties
+            platform.traverse((node) => {
+                if (node.isMesh) {
+                    node.castShadow = true;   // If you want the model to cast shadows on itself or other objects
+                    node.receiveShadow = true; // Ensure the model receives shadows
+                }
+            });
+        
+            this._scene.add(platform);
         }, undefined, (error) => {
             console.error('An error occurred while loading the model:', error);
         });
@@ -272,17 +279,9 @@ class BulletHell {
     }
 
     _OnWindowResize() {
-        // Main camera resize handling
         this._camera.aspect = window.innerWidth / window.innerHeight;
         this._camera.updateProjectionMatrix();
         this._threejs.setSize(window.innerWidth, window.innerHeight);
-
-        // Update the top-view camera's bounds if the window resizes
-        this._topViewCamera.left = window.innerWidth / -2;
-        this._topViewCamera.right = window.innerWidth / 2;
-        this._topViewCamera.top = window.innerHeight / 2;
-        this._topViewCamera.bottom = window.innerHeight / -2;
-        this._topViewCamera.updateProjectionMatrix();
     }
 
     _UpdateSun() {
@@ -295,7 +294,6 @@ class BulletHell {
         this._sun.updateMatrixWorld();
         this._sun.target.updateMatrixWorld();
     }
-
     _RAF() {
         requestAnimationFrame((t) => {
             if (this._previousRAF === null) {
@@ -325,23 +323,13 @@ class BulletHell {
         });
     }
 
-
     _Step(timeElapsed) {
-        const player = this._entityManager.Get('player');
-        const playerHealth = player.GetComponent('HealthComponent');
-    
-        // Stop the game if player is dead or loses
-        if (playerHealth && playerHealth.health <= 0) {
-            console.log("Player is dead. Stopping timer.");
-            return;  // Skip further updates if the player is dead
-        }
-    
         const timeElapsedS = Math.min(1.0 / 30.0, timeElapsed * 0.001);
-    
-        this._UpdateSun();
+
+        //this._UpdateSun();
+
         this._entityManager.Update(timeElapsedS);
     }
-    
 }
 
 let _APP = null;

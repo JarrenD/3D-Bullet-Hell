@@ -73,15 +73,12 @@ class BulletHell {
         this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         this._camera.position.set(25, 10, 25);
 
-        // Initialize the top-view camera
+                        // Initialize the top-view camera
         this._topViewCamera = new THREE.OrthographicCamera(
-            window.innerWidth / -2, window.innerWidth / 2,
-            window.innerHeight / 2, window.innerHeight / -2,
-            near, far
+            -50, 50, 50, -50, near, far  // Adjust these values to match the arena's size
         );
-        this._topViewCamera.position.set(0, 100, 0);  // Set a high y position for a top view
+        this._topViewCamera.position.set(0, 100, 0);  // Set a high y position for top view
         this._topViewCamera.lookAt(0, 0, 0);
-
         // Scene setup
 
         this._npcList = [];
