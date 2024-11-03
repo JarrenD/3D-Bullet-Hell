@@ -85,7 +85,7 @@ class BulletHell {
         this._scene.background = new THREE.Color(0xFFFFFF);
         this._scene.fog = new THREE.FogExp2(0x89b2eb, 0.002);
 
-        let light = new THREE.DirectionalLight(, 1.0);
+        let light = new THREE.DirectionalLight(0xF4FDFF, 1.0);
         light.position.set(20, 50, -40);
         light.target.position.set(0, 0, 40);
         light.castShadow = true;
