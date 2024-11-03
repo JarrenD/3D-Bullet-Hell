@@ -3,7 +3,7 @@ import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.118/examples
 
 import { third_person_camera } from './third-person-camera.js';
 import { entity_manager } from './entity-manager.js';
-import { player_entity } from './player-entity.js'
+import { player_entity } from './player-entity2.js'
 import { entity } from './entity.js';
 import { player_input } from './player-input.js';
 import { spatial_hash_grid } from './spatial-hash-grid.js';
@@ -72,6 +72,17 @@ class BulletHell {
         const far = 10000.0;
         this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         this._camera.position.set(25, 10, 25);
+
+        // Initialize the top-view camera
+        this._topViewCamera = new THREE.OrthographicCamera(
+            window.innerWidth / -2, window.innerWidth / 2,
+            window.innerHeight / 2, window.innerHeight / -2,
+            near, far
+        );
+        this._topViewCamera.position.set(0, 100, 0);  // Set a high y position for a top view
+        this._topViewCamera.lookAt(0, 0, 0);
+
+        // Scene setup
 
         this._npcList = [];
         this._playerList=[];
@@ -285,7 +296,22 @@ class BulletHell {
 
             this._RAF();
 
+            this._threejs.clear();
+
+            // Render the main camera view
+            this._threejs.setViewport(0, 0, window.innerWidth, window.innerHeight);
             this._threejs.render(this._scene, this._camera);
+
+            // Render the top-view camera in the bottom-left corner
+            const insetWidth = window.innerWidth / 4;
+            const insetHeight = window.innerHeight / 4;
+            this._threejs.setViewport(10, 10, insetWidth, insetHeight);
+            this._threejs.setScissor(10, 10, insetWidth, insetHeight);
+            this._threejs.setScissorTest(true);
+            this._threejs.render(this._scene, this._topViewCamera);
+
+            this._threejs.setScissorTest(false);  // Disable scissor test for main rendering
+
             this._Step(t - this._previousRAF);
             this._previousRAF = t;
         });

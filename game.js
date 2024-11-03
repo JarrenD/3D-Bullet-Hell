@@ -73,6 +73,17 @@ class BulletHell {
         this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         this._camera.position.set(25, 10, 25);
 
+        // Initialize the top-view camera
+        this._topViewCamera = new THREE.OrthographicCamera(
+            window.innerWidth / -2, window.innerWidth / 2,
+            window.innerHeight / 2, window.innerHeight / -2,
+            near, far
+        );
+        this._topViewCamera.position.set(0, 100, 0);  // Set a high y position for a top view
+        this._topViewCamera.lookAt(0, 0, 0);
+
+        // Scene setup
+
         this._npcList = [];
         this._playerList=[];
 
@@ -261,9 +272,17 @@ class BulletHell {
     }
 
     _OnWindowResize() {
+        // Main camera resize handling
         this._camera.aspect = window.innerWidth / window.innerHeight;
         this._camera.updateProjectionMatrix();
         this._threejs.setSize(window.innerWidth, window.innerHeight);
+
+        // Update the top-view camera's bounds if the window resizes
+        this._topViewCamera.left = window.innerWidth / -2;
+        this._topViewCamera.right = window.innerWidth / 2;
+        this._topViewCamera.top = window.innerHeight / 2;
+        this._topViewCamera.bottom = window.innerHeight / -2;
+        this._topViewCamera.updateProjectionMatrix();
     }
 
     _UpdateSun() {
@@ -285,19 +304,44 @@ class BulletHell {
 
             this._RAF();
 
+            this._threejs.clear();
+
+            // Render the main camera view
+            this._threejs.setViewport(0, 0, window.innerWidth, window.innerHeight);
             this._threejs.render(this._scene, this._camera);
+
+            // Render the top-view camera in the bottom-left corner
+            const insetWidth = window.innerWidth / 4;
+            const insetHeight = window.innerHeight / 4;
+            this._threejs.setViewport(10, 10, insetWidth, insetHeight);
+            this._threejs.setScissor(10, 10, insetWidth, insetHeight);
+            this._threejs.setScissorTest(true);
+            this._threejs.render(this._scene, this._topViewCamera);
+
+            this._threejs.setScissorTest(false);  // Disable scissor test for main rendering
+
             this._Step(t - this._previousRAF);
             this._previousRAF = t;
         });
     }
 
+
     _Step(timeElapsed) {
+        const player = this._entityManager.Get('player');
+        const playerHealth = player.GetComponent('HealthComponent');
+    
+        // Stop the game if player is dead or loses
+        if (playerHealth && playerHealth.health <= 0) {
+            console.log("Player is dead. Stopping timer.");
+            return;  // Skip further updates if the player is dead
+        }
+    
         const timeElapsedS = Math.min(1.0 / 30.0, timeElapsed * 0.001);
-
+    
         this._UpdateSun();
-
         this._entityManager.Update(timeElapsedS);
     }
+    
 }
 
 let _APP = null;
