@@ -294,7 +294,7 @@ export const player_entity = (() => {
       if (input._keys.forward) {
         velocity.z += acc.z * timeInSeconds;
       }
-      if (input._keys.backward) {
+      if (input._keys.backward && calculateDistance(this._parent._position.x,this._parent._position.z,0,40)<=125) {
         velocity.z -= acc.z * timeInSeconds;
       }
 

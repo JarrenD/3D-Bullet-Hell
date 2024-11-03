@@ -85,19 +85,19 @@ class BulletHell {
         this._scene.background = new THREE.Color(0xFFFFFF);
         this._scene.fog = new THREE.FogExp2(0x89b2eb, 0.002);
 
-        let light = new THREE.DirectionalLight(0xFFFFFF, 1.0);
-        light.position.set(-10, 500, 10);
-        light.target.position.set(0, 0, 0);
+        let light = new THREE.DirectionalLight(0xF4FDFF, 1.0);
+        light.position.set(20, 50, -40);
+        light.target.position.set(0, 0, 40);
         light.castShadow = true;
         light.shadow.bias = -0.001;
         light.shadow.mapSize.width = 4096;
         light.shadow.mapSize.height = 4096;
         light.shadow.camera.near = 0.1;
         light.shadow.camera.far = 1000.0;
-        light.shadow.camera.left = 100;
-        light.shadow.camera.right = -100;
-        light.shadow.camera.top = 100;
-        light.shadow.camera.bottom = -100;
+        light.shadow.camera.left = 260;
+        light.shadow.camera.right = -260;
+        light.shadow.camera.top = 260;
+        light.shadow.camera.bottom = -260;
         this._scene.add(light);
 
         this._sun = light;
@@ -168,9 +168,18 @@ class BulletHell {
     
         loader.load(modelPath, (gltf) => {
             const platform = gltf.scene; // Get the loaded model
-            platform.position.set(0, -7.5, 40); // Set the desired position
-            platform.scale.set(0.01, 0.01, 0.01); // Adjust scale if necessary
-            this._scene.add(platform); // Add the platform to the scene
+            platform.position.set(0, -7.5, 40);
+            platform.scale.set(0.01, 0.01, 0.01);
+        
+            // Enable shadow properties
+            platform.traverse((node) => {
+                if (node.isMesh) {
+                    node.castShadow = true;   // If you want the model to cast shadows on itself or other objects
+                    node.receiveShadow = true; // Ensure the model receives shadows
+                }
+            });
+        
+            this._scene.add(platform);
         }, undefined, (error) => {
             console.error('An error occurred while loading the model:', error);
         });
@@ -294,7 +303,7 @@ class BulletHell {
     _Step(timeElapsed) {
         const timeElapsedS = Math.min(1.0 / 30.0, timeElapsed * 0.001);
 
-        this._UpdateSun();
+        //this._UpdateSun();
 
         this._entityManager.Update(timeElapsedS);
     }
