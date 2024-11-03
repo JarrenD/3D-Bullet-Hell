@@ -73,6 +73,18 @@ class BulletHell {
         this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         this._camera.position.set(25, 10, 25);
 
+        this._topViewCamera= new THREE.OrthographicCamera(
+            -125, // left
+            125,  // right
+            125,                // top
+            -125,               // bottom
+            0.1,                        // near clipping plane
+            1000                        // far clipping plane
+        );
+        this._topViewCamera.position.set(0, 100, 40);  // Set a high y position for a top view
+        this._topViewCamera.lookAt(0, 0, 40);
+
+
         this._npcList = [];
         this._playerList=[];
 
@@ -294,7 +306,22 @@ class BulletHell {
 
             this._RAF();
 
+            this._threejs.clear();
+
+            // Render the main camera view
+            this._threejs.setViewport(0, 0, window.innerWidth, window.innerHeight);
             this._threejs.render(this._scene, this._camera);
+
+            // Render the top-view camera in the bottom-left corner
+            const insetWidth = window.innerHeight/ 4;
+            const insetHeight = window.innerHeight / 4;
+            this._threejs.setViewport(10, window.innerHeight - insetHeight - 50, insetWidth, insetHeight);
+            this._threejs.setScissor(10, window.innerHeight - insetHeight - 50, insetWidth, insetHeight);
+            this._threejs.setScissorTest(true);
+            this._threejs.render(this._scene, this._topViewCamera);
+
+            this._threejs.setScissorTest(false);  // Disable scissor test for main rendering
+
             this._Step(t - this._previousRAF);
             this._previousRAF = t;
         });

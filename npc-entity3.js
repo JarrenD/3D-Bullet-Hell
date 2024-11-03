@@ -397,14 +397,17 @@ if (this._bulletCooldown >= this._bulletInterval) {
   const attack = Math.random();
   //this._ShootEnemyStreem(20);
   if (attack < 0.25) {
-    this._ShootEnemySpiralBullets(100, 80, 6);
+    this._ShootEnemySpiralBullets(100, 80, 4);
   } else if (attack < 0.50) {
     this._ShootEnemyJumpRingBullets(60, 80, 0);
+    setTimeout(() => {
+      this._ShootEnemyJumpRingBullets(60, 80, 0);
+    }, 0.5 * 1000);
   } else if (attack < 0.75 && this._parent.GetComponent('HealthComponent').GetHealth()<(450/2)) {
     this._ShootEnemyStreem(20);
   } 
   else {
-    this._ShootEnemyRotatingGapBullets(40, 80, 24, 4); // Shoots with gaps, 30-degree rotation, 4 times
+    this._ShootEnemyRotatingGapBullets(40, 80, 24, 6); // Shoots with gaps, 30-degree rotation, 4 times
   }
 
 
